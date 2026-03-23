@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Vieques — Filters + Bounce + Synced Numbers</title>
+  <title>Vieques — Filters + Bounce + Sync (Working)</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -41,15 +41,9 @@
     .item:hover{background:#f7fbff;}
     .item.selected{outline:3px solid rgba(0,0,0,.08);background:#f7fbff}
 
-    /* NUMBER BADGE (LEFT NAV) — always visible */
-    .num-badge{
-      width:32px;height:32px;min-width:32px;
-      border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;font-size:12px;line-height:1;
-      color:#fff;flex:0 0 auto;
-      border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.18);
-    }
-    .num-beach{background:#0096C7} .num-nature{background:#1A7A4A} .num-bio{background:#06D6A0} .num-history{background:#E07B54} .num-home{background:#9B59B6}
+    .num-badge{width:32px;height:32px;min-width:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      font-weight:900;font-size:12px;color:#fff;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+    .num-beach{background:#0096C7}.num-nature{background:#1A7A4A}.num-bio{background:#06D6A0}.num-history{background:#E07B54}.num-home{background:#9B59B6}
 
     .name{font-weight:900;color:var(--ink);font-size:13px;}
     .tag{font-size:12px;color:var(--muted);font-weight:700;margin-top:3px;}
@@ -70,13 +64,12 @@
     .home-label{background:#fff;color:#7D3C98;border:4px solid #FFD93D;border-radius:999px;padding:8px 12px;
       font-weight:1000;font-size:16px;box-shadow:0 14px 30px rgba(0,0,0,.28);white-space:nowrap;}
 
-    /* Numbered markers */
+    /* Map numbered markers */
     .stop-marker{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
       font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.25)}
-    .m-beach{background:#0096C7} .m-nature{background:#1A7A4A} .m-bio{background:#06D6A0} .m-history{background:#E07B54}
+    .m-beach{background:#0096C7}.m-nature{background:#1A7A4A}.m-bio{background:#06D6A0}.m-history{background:#E07B54}
     .stop-marker.selected{outline:4px solid rgba(255,217,61,.95)}
 
-    /* Bounce animation */
     @keyframes bounce{0%{transform:translateY(0)}30%{transform:translateY(-16px)}50%{transform:translateY(0)}70%{transform:translateY(-8px)}100%{transform:translateY(0)}}
     .bounce{animation:bounce .6s ease}
 
@@ -95,15 +88,9 @@
 
     .detail-hero{padding:18px 16px;border-bottom:3px dashed #eee}
     .detail-top{display:flex;gap:10px;align-items:flex-start}
-
-    /* NUMBER BADGE (DRAWER) */
-    .detail-num{
-      width:42px;height:42px;min-width:42px;
-      border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;font-size:13px;line-height:1;
-      color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.22)
-    }
-    .detail-num.num-beach{background:#0096C7} .detail-num.num-nature{background:#1A7A4A} .detail-num.num-bio{background:#06D6A0} .detail-num.num-history{background:#E07B54} .detail-num.num-home{background:#9B59B6}
+    .detail-num{width:42px;height:42px;min-width:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      font-weight:900;font-size:13px;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.22)}
+    .detail-num.num-beach{background:#0096C7}.detail-num.num-nature{background:#1A7A4A}.detail-num.num-bio{background:#06D6A0}.detail-num.num-history{background:#E07B54}.detail-num.num-home{background:#9B59B6}
 
     .detail-cat{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
     .detail-name{font-size:22px;font-weight:900;margin:4px 0}
@@ -172,7 +159,7 @@ function driveFromHome(lat,lng){
   return { miles:miles.toFixed(1), mins };
 }
 
-// Reliable tiles
+// Map
 const map = L.map('map', { center: [HOME_BASE.lat, HOME_BASE.lng], zoom: 12, zoomControl: false });
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
@@ -192,8 +179,6 @@ let selectedId = null;
 let justOpened = false;
 
 const detail = document.getElementById('detail');
-
-// markers by id
 const markers = new Map();
 
 function makeStopIcon(stop, opts={}){
@@ -217,9 +202,8 @@ function setMarkerSelected(stopId){
   }
   selectedId = stopId;
   if(stopId && markers.has(stopId)){
-    const m = markers.get(stopId);
     const s = STOPS.find(x=>x.id===stopId);
-    if(!s) return;
+    const m = markers.get(stopId);
     m.setIcon(makeStopIcon(s, {selected:true, bounce:true}));
     setTimeout(()=>{
       if(markers.has(stopId)) markers.get(stopId).setIcon(makeStopIcon(s, {selected:true, bounce:false}));
@@ -264,6 +248,7 @@ function openDetail(s){
   detail.classList.add('open');
   renderList();
 }
+
 function closeDetail(){ detail.classList.remove('open'); }
 document.getElementById('close-detail').addEventListener('click', closeDetail);
 document.addEventListener('click', (e)=>{
@@ -274,14 +259,14 @@ document.addEventListener('click', (e)=>{
 });
 
 function applyFilter(){
-  for(const s of STOPS){
-    if(s.cat==='home') continue;
+  STOPS.forEach(s=>{
+    if(s.cat==='home') return;
     const show = (activeFilter==='all') || (s.cat===activeFilter);
     const m = markers.get(s.id);
-    if(!m) continue;
+    if(!m) return;
     if(show){ if(!map.hasLayer(m)) m.addTo(map); }
     else { if(map.hasLayer(m)) map.removeLayer(m); }
-  }
+  });
   renderList();
 }
 
@@ -312,7 +297,6 @@ function renderFilters(){
 function renderList(){
   const listEl = document.getElementById('list');
   listEl.innerHTML='';
-
   const filtered = STOPS.filter(s=>{
     if(s.cat==='home') return true;
     return activeFilter==='all' || s.cat===activeFilter;
@@ -321,8 +305,6 @@ function renderList(){
   filtered.forEach(s=>{
     const item=document.createElement('div');
     item.className='item'+(selectedId===s.id?' selected':'');
-
-    // ALWAYS include the number badge in the left nav
     item.innerHTML = `
       <div class="num-badge num-${s.cat}">${s.id}</div>
       <div style="flex:1">
@@ -351,6 +333,7 @@ STOPS.forEach(s=>{
   markers.set(s.id, m);
 });
 
+// Fit bounds
 const bounds = L.latLngBounds(STOPS.map(s => [s.lat, s.lng]));
 map.fitBounds(bounds.pad(0.10));
 
