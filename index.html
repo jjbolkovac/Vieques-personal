@@ -15,12 +15,10 @@
 header{padding:14px 16px 10px;border-bottom:1px solid #eee}
 header h1{margin:0;font-size:18px}
 header p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:700;line-height:1.35}
-
 .tabs{display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid #eee;background:#fff;position:sticky;top:0;z-index:5}
 .tab-btn{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;border:2px solid #e6e6e6;background:#fff;color:#567;cursor:pointer}
 .tab-btn.on{border-color:var(--ink);background:var(--ink);color:#fff}
 .subtitle{padding:10px 16px 0;color:var(--muted);font-weight:800;font-size:12px}
-
 .list{padding:10px}
 .item{display:flex;gap:10px;border:1px solid #eee;border-radius:12px;padding:10px;margin-bottom:8px;cursor:pointer;align-items:flex-start}
 .item:hover{background:#f7fbff}
@@ -28,7 +26,6 @@ header p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:700;line-h
 .num{width:32px;height:32px;min-width:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.18);font-size:12px;line-height:1}
 .name{font-weight:900;font-size:13px;color:var(--ink)}
 .tag{font-size:12px;color:var(--muted);font-weight:700;margin-top:3px}
-
 .c-beach{background:var(--beach)}
 .c-bio{background:var(--bio)}
 .c-nature{background:var(--nature)}
@@ -38,14 +35,11 @@ header p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:700;line-h
 .c-rum{background:var(--rum)}
 .c-logistics{background:var(--log)}
 .c-home{background:var(--home)}
-
 .mk{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.25)}
 .mk.sel{outline:4px solid rgba(255,217,61,.95)}
 @keyframes bounce{0%{transform:translateY(0)}30%{transform:translateY(-16px)}50%{transform:translateY(0)}70%{transform:translateY(-8px)}100%{transform:translateY(0)}}
 .mk.bounce{animation:bounce .6s ease}
-
 .home-label{background:#fff;color:#7D3C98;border:4px solid #FFD93D;border-radius:999px;padding:8px 12px;font-weight:1000;font-size:16px;box-shadow:0 14px 30px rgba(0,0,0,.28);white-space:nowrap}
-
 #detail{position:fixed;top:0;right:0;width:410px;height:100%;background:#fff;transform:translateX(100%);transition:transform .35s ease;box-shadow:-10px 0 30px rgba(0,0,0,.25);z-index:999;overflow:auto}
 #detail.open{transform:translateX(0)}
 #close-detail{position:absolute;top:12px;right:12px;background:var(--coral);color:#fff;border:none;width:34px;height:34px;border-radius:50%;font-weight:900;cursor:pointer}
@@ -60,14 +54,11 @@ header p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:700;line-h
 .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .btnlink{display:inline-flex;gap:8px;align-items:center;padding:10px 12px;border-radius:999px;border:none;cursor:pointer;background:#102028;color:#fff;font-weight:900;text-decoration:none}
 .btnlink.secondary{background:#f1f4f6;color:#102028}
-
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:850}
 #overlay.show{opacity:1;pointer-events:auto}
-
 .mobile-fab{position:fixed;bottom:16px;left:16px;z-index:1001;padding:12px 16px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 22px rgba(0,0,0,.25)}
 .mobile-fab.alt{left:auto;right:16px}
 .sheet-handle{width:42px;height:5px;border-radius:999px;background:#d8dde3;margin:10px auto 6px auto}
-
 @media (max-width: 820px){
   #wrap{grid-template-columns:1fr}
   #map{height:100svh}
@@ -88,7 +79,7 @@ header p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:700;line-h
     <div class="sheet-handle" id="sidebarHandle"></div>
     <header>
       <h1>Vieques — Top Picks</h1>
-      <p>Accurate coordinates for major sights (Bio Bay, Caracas, La Chiva, Sun Bay, Playa Negra, etc.). Tap a stop to open the drawer.</p>
+      <p>Updated: Crab Island Rum Distillery + Epic Sunset Palm Tree coordinates corrected.</p>
     </header>
     <div class="tabs" id="tabs"></div>
     <div class="subtitle" id="subtitle"></div>
@@ -96,20 +87,16 @@ header p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:700;line-h
   </div>
   <div id="map"></div>
 </div>
-
 <div id="detail">
   <div class="sheet-handle" id="detailHandle"></div>
   <button id="close-detail">✕</button>
   <div id="detail-content"></div>
 </div>
-
 <button id="fabStops" class="mobile-fab">📍 Stops</button>
 <button id="fabFull" class="mobile-fab alt">🔎 Full map</button>
-
 <script>
-const STOPS = [{"id": 1, "name": "Bahía Bioluminiscente", "cat": "bio", "lat": 18.10194, "lng": -65.44583, "tag": "World-famous glowing bay (Puerto Mosquito)", "url": "https://www.google.com/maps/place/Bah%C3%ADa+Bioluminiscente/data=!4m2!3m1!1s0x8c04c7d9164667f9:0x206700d636a92857"}, {"id": 2, "name": "Caracas Beach", "cat": "beach", "lat": 18.108611, "lng": -65.413056, "tag": "Red Beach—iconic clear water & easy access", "url": "https://www.google.com/maps/place/Caracas+Beach/data=!4m2!3m1!1s0x8c04c63906960671:0xdca24912e84c274b"}, {"id": 3, "name": "Playa La Chiva", "cat": "beach", "lat": 18.113056, "lng": -65.3875, "tag": "Blue Beach—often cited among the best", "url": "https://www.google.com/maps/search/18.113056,-65.3875"}, {"id": 4, "name": "Playa Sun Bay", "cat": "beach", "lat": 18.09889, "lng": -65.46083, "tag": "Most accessible big beach near Esperanza", "url": "https://www.google.com/maps/place/Playa+Sun+Bay/data=!4m2!3m1!1s0x8c04c7e2641efafd:0xc474600952fe2a08"}, {"id": 5, "name": "Playa Punta Arenas", "cat": "beach", "lat": 18.10755, "lng": -65.56856, "tag": "Remote west-end beach & views", "url": "https://www.google.com/maps/place/Playa+Punta+Arenas/data=!4m2!3m1!1s0x8c04bb5fe23c939d:0x6ff951c07d4de98b"}, {"id": 6, "name": "Black Sand Beach", "cat": "beach", "lat": 18.0957199, "lng": -65.492351, "tag": "Playa Negra—unique black sand", "url": "https://www.google.com/maps/place/Black+Sand+Beach/data=!4m2!3m1!1s0x8c04b7f6b0023c3b:0x7de9aac05ae07e63"}, {"id": 7, "name": "Media Luna Beach", "cat": "beach", "lat": 18.09139, "lng": -65.45611, "tag": "Secluded crescent bay", "url": "https://www.google.com/maps/search/18.09139,-65.45611"}, {"id": 8, "name": "Navio Beach", "cat": "beach", "lat": 18.09944, "lng": -65.43917, "tag": "Wild, scenic beach", "url": "https://www.google.com/maps/search/18.09944,-65.43917"}, {"id": 9, "name": "Mosquito Pier", "cat": "nature", "lat": 18.14892, "lng": -65.51486, "tag": "Pier + snorkel / sunset spot", "url": "https://www.google.com/maps/search/18.14892,-65.51486"}, {"id": 10, "name": "Vieques Wildlife Refuge", "cat": "nature", "lat": 18.1167, "lng": -65.4167, "tag": "Refuge—beaches, trails, wildlife", "url": "https://www.google.com/maps/search/18.1167,-65.4167"}, {"id": 11, "name": "Plataforma de Observación de Monte Pirata", "cat": "viewpoint", "lat": 18.09306, "lng": -65.55111, "tag": "Highest point—panoramic views", "url": "https://www.google.com/maps/place/Plataforma+de+Observaci%C3%B3n+de+Monte+Pirata/data=!4m2!3m1!1s0x8c04b783581663cd:0xa71a679f528ac2e5"}, {"id": 12, "name": "El Fortín Conde de Mirasol", "cat": "history", "lat": 18.147436, "lng": -65.43907, "tag": "Historic Spanish fort museum", "url": "https://www.google.com/maps/search/18.147436,-65.43907"}, {"id": 13, "name": "Punta Mulas Lighthouse", "cat": "history", "lat": 18.154472, "lng": -65.443833, "tag": "Historic lighthouse / museum", "url": "https://www.google.com/maps/search/18.154472,-65.443833"}, {"id": 14, "name": "Esperanza Malecón", "cat": "town", "lat": 18.0972, "lng": -65.4708, "tag": "Waterfront boardwalk + restaurants", "url": "https://www.google.com/maps/search/18.0972,-65.4708"}, {"id": 15, "name": "Isabel Segunda", "cat": "town", "lat": 18.14913, "lng": -65.44266, "tag": "Main town / ferry area", "url": "https://www.google.com/maps/search/18.14913,-65.44266"}, {"id": 16, "name": "Crab Island Rum Distillery", "cat": "rum", "lat": 18.14913, "lng": -65.44266, "tag": "Local rum distillery & tastings (marker approx)", "url": "https://www.google.com/maps/place/Crab+Island+Rum+Distillery/data=!4m2!3m1!1s0x8c04b9296c1337a7:0x87e2b4610f5f8dbf"}, {"id": 17, "name": "Epic Sunset Palm Tree", "cat": "town", "lat": 18.0972, "lng": -65.4708, "tag": "Sunset palm swing spot (marker approx)", "url": "https://www.google.com/maps/place/Epic+Sunset+Palm+Tree/data=!4m2!3m1!1s0x8c04c900406c81f1:0x418b8e8a99fa21f2"}, {"id": 18, "name": "Car Rental Pickup & Drop Off", "cat": "logistics", "lat": 18.145572662353516, "lng": -65.44182586669922, "tag": "Car rental pickup/drop-off point", "url": "https://www.google.com/maps/place/4HX5%2B5JV/data=!4m2!3m1!1s0x8c04c70fee66d8df:0xba24234038c4877d"}, {"id": 19, "name": "Home Base", "cat": "home", "lat": 18.1579037, "lng": -65.4356432, "tag": "Your home base (June 1–6, 2026)", "url": "https://www.google.com/maps/search/18.1579037,-65.4356432"}];
+const STOPS = [{"id": 1, "name": "Bahía Bioluminiscente", "cat": "bio", "lat": 18.10194, "lng": -65.44583, "tag": "World-famous glowing bay (Puerto Mosquito)", "url": "https://www.google.com/maps/search/18.10194,-65.44583"}, {"id": 2, "name": "Caracas Beach", "cat": "beach", "lat": 18.108611, "lng": -65.413056, "tag": "Red Beach—iconic clear water & easy access", "url": "https://www.google.com/maps/search/18.108611,-65.413056"}, {"id": 3, "name": "Playa La Chiva", "cat": "beach", "lat": 18.113056, "lng": -65.3875, "tag": "Blue Beach—often cited among the best", "url": "https://www.google.com/maps/search/18.113056,-65.3875"}, {"id": 4, "name": "Playa Sun Bay", "cat": "beach", "lat": 18.09889, "lng": -65.46083, "tag": "Most accessible big beach near Esperanza", "url": "https://www.google.com/maps/search/18.09889,-65.46083"}, {"id": 5, "name": "Playa Punta Arenas", "cat": "beach", "lat": 18.10755, "lng": -65.56856, "tag": "Remote west-end beach & views", "url": "https://www.google.com/maps/search/18.10755,-65.56856"}, {"id": 6, "name": "Black Sand Beach", "cat": "beach", "lat": 18.0957199, "lng": -65.492351, "tag": "Playa Negra—unique black sand", "url": "https://www.google.com/maps/search/18.0957199,-65.492351"}, {"id": 7, "name": "Media Luna Beach", "cat": "beach", "lat": 18.09139, "lng": -65.45611, "tag": "Secluded crescent bay", "url": "https://www.google.com/maps/search/18.09139,-65.45611"}, {"id": 8, "name": "Navio Beach", "cat": "beach", "lat": 18.09944, "lng": -65.43917, "tag": "Wild, scenic beach", "url": "https://www.google.com/maps/search/18.09944,-65.43917"}, {"id": 9, "name": "Mosquito Pier", "cat": "nature", "lat": 18.14892, "lng": -65.51486, "tag": "Pier + snorkel / sunset spot", "url": "https://www.google.com/maps/search/18.14892,-65.51486"}, {"id": 10, "name": "Vieques Wildlife Refuge", "cat": "nature", "lat": 18.1167, "lng": -65.4167, "tag": "Refuge—beaches, trails, wildlife", "url": "https://www.google.com/maps/search/18.1167,-65.4167"}, {"id": 11, "name": "Plataforma de Observación de Monte Pirata", "cat": "viewpoint", "lat": 18.09306, "lng": -65.55111, "tag": "Highest point—panoramic views", "url": "https://www.google.com/maps/search/18.09306,-65.55111"}, {"id": 12, "name": "El Fortín Conde de Mirasol", "cat": "history", "lat": 18.147436, "lng": -65.43907, "tag": "Historic Spanish fort museum", "url": "https://www.google.com/maps/search/18.147436,-65.43907"}, {"id": 13, "name": "Punta Mulas Lighthouse", "cat": "history", "lat": 18.154472, "lng": -65.443833, "tag": "Historic lighthouse / museum", "url": "https://www.google.com/maps/search/18.154472,-65.443833"}, {"id": 14, "name": "Esperanza Malecón", "cat": "town", "lat": 18.0972, "lng": -65.4708, "tag": "Waterfront boardwalk + restaurants", "url": "https://www.google.com/maps/search/18.0972,-65.4708"}, {"id": 15, "name": "Isabel Segunda", "cat": "town", "lat": 18.14913, "lng": -65.44266, "tag": "Main town / ferry area", "url": "https://www.google.com/maps/search/18.14913,-65.44266"}, {"id": 16, "name": "Crab Island Rum Distillery", "cat": "rum", "lat": 18.122055, "lng": -65.525675, "tag": "Local rum distillery & tastings", "url": "https://www.google.com/maps/search/18.122055,-65.525675"}, {"id": 17, "name": "Epic Sunset Palm Tree", "cat": "town", "lat": 18.09267, "lng": -65.46813, "tag": "Sunset palm spot", "url": "https://www.google.com/maps/search/18.09267,-65.46813"}, {"id": 18, "name": "Car Rental Pickup & Drop Off", "cat": "logistics", "lat": 18.145572662353516, "lng": -65.44182586669922, "tag": "Car rental pickup/drop-off point", "url": "https://www.google.com/maps/search/18.145572662353516,-65.44182586669922"}, {"id": 19, "name": "Home Base", "cat": "home", "lat": 18.1579037, "lng": -65.4356432, "tag": "Your home base", "url": "https://www.google.com/maps/search/18.1579037,-65.4356432"}];
 const FILTERS = {"all": {"label": "All", "subtitle": "Top picks first • swipe + tap to explore", "order": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]}, "bio": {"label": "Bio Bay", "subtitle": "Puerto Mosquito (bio bay)", "order": [1]}, "beach": {"label": "Beaches", "subtitle": "Beaches", "order": [2, 3, 4, 5, 6, 7, 8]}, "nature": {"label": "Nature", "subtitle": "Pier + refuge", "order": [9, 10]}, "viewpoint": {"label": "Viewpoint", "subtitle": "Views", "order": [11]}, "history": {"label": "History", "subtitle": "Fort + lighthouse", "order": [12, 13]}, "town": {"label": "Towns", "subtitle": "Towns", "order": [14, 15, 17]}, "rum": {"label": "Rum", "subtitle": "Rum", "order": [16]}, "logistics": {"label": "Logistics", "subtitle": "Logistics", "order": [18]}, "home": {"label": "Home", "subtitle": "Home base", "order": [19]}};
-
 const CAT = {
   bio: {label:'Bio Bay', emoji:'✨', color:getComputedStyle(document.documentElement).getPropertyValue('--bio').trim()},
   beach: {label:'Beaches', emoji:'🏖️', color:getComputedStyle(document.documentElement).getPropertyValue('--beach').trim()},
@@ -121,243 +108,98 @@ const CAT = {
   logistics: {label:'Logistics', emoji:'🚗', color:getComputedStyle(document.documentElement).getPropertyValue('--log').trim()},
   home: {label:'Home', emoji:'🏠', color:getComputedStyle(document.documentElement).getPropertyValue('--home').trim()},
 };
-
 const stopById = new Map(STOPS.map(s=>[s.id,s]));
-let activeKey = 'all';
-let selectedId = null;
-
-const sidebar = document.getElementById('sidebar');
-const detail = document.getElementById('detail');
-const overlay = document.getElementById('overlay');
-
-const mq = window.matchMedia('(max-width: 820px)');
-function isMobile(){ return mq.matches; }
-
-const map = L.map('map', {center:[18.11,-65.45], zoom:12, zoomControl:false});
+let activeKey='all';
+let selectedId=null;
+const sidebar=document.getElementById('sidebar');
+const detail=document.getElementById('detail');
+const overlay=document.getElementById('overlay');
+const mq=window.matchMedia('(max-width: 820px)');
+function isMobile(){return mq.matches;}
+const map=L.map('map',{center:[18.11,-65.45],zoom:12,zoomControl:false});
 L.control.zoom({position:'bottomright'}).addTo(map);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap contributors'}).addTo(map);
-
-const markers = new Map();
-
-function stepNumber(id){
-  const idx = FILTERS[activeKey].order.indexOf(id);
-  return idx >= 0 ? String(idx+1) : '';
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+const markers=new Map();
+function stepNumber(id){const idx=FILTERS[activeKey].order.indexOf(id);return idx>=0?String(idx+1):'';}
+function appleMapsUrl(stop){const q=encodeURIComponent(stop.name);return `https://maps.apple.com/?ll=${stop.lat},${stop.lng}&q=${q}`;}
+function mkIcon(stop,selected=false,bounce=false){
+  const cat=(stop.cat==='home')?CAT.home:CAT[stop.cat];
+  const cls=['mk']; if(selected) cls.push('sel'); if(bounce) cls.push('bounce');
+  const num=stepNumber(stop.id);
+  return L.divIcon({className:'', html:`<div class="${cls.join(' ')}" style="background:${cat.color}">${num}</div>`, iconSize:[36,36], iconAnchor:[18,18]});
 }
-
-function appleMapsUrl(stop){
-  const q = encodeURIComponent(stop.name);
-  return `https://maps.apple.com/?ll=${stop.lat},${stop.lng}&q=${q}`;
-}
-
-function mkIcon(stop, selected=false, bounce=false){
-  const cat = (stop.cat==='home') ? CAT.home : CAT[stop.cat];
-  const cls = ['mk'];
-  if(selected) cls.push('sel');
-  if(bounce) cls.push('bounce');
-  const num = stepNumber(stop.id);
-  return L.divIcon({
-    className:'',
-    html:`<div class="${cls.join(' ')}" style="background:${cat.color}">${num}</div>`,
-    iconSize:[36,36],
-    iconAnchor:[18,18]
-  });
-}
-
-// Home ring + label
-const home = STOPS.find(s=>s.cat==='home');
+const home=STOPS.find(s=>s.cat==='home');
 if(home){
-  L.circle([home.lat, home.lng], {radius:1000, color:'#FFD93D', weight:6, opacity:1, fillColor:'#9B59B6', fillOpacity:0.12}).addTo(map);
-  L.marker([home.lat, home.lng], {interactive:false, icon: L.divIcon({className:'', html:'<div class="home-label">🏠 HOME BASE</div>', iconSize:[180,44], iconAnchor:[90,66]})}).addTo(map);
+  L.circle([home.lat,home.lng],{radius:1000,color:'#FFD93D',weight:6,opacity:1,fillColor:'#9B59B6',fillOpacity:0.12}).addTo(map);
+  L.marker([home.lat,home.lng],{interactive:false,icon:L.divIcon({className:'',html:'<div class="home-label">🏠 HOME BASE</div>',iconSize:[180,44],iconAnchor:[90,66]})}).addTo(map);
 }
-
-STOPS.forEach(s=>{
-  const m = L.marker([s.lat,s.lng], {icon: mkIcon(s,false,false)}).addTo(map);
-  markers.set(s.id, m);
-  m.on('click', ()=>openDetail(s));
-});
-
-const allBounds = L.latLngBounds(STOPS.map(s=>[s.lat,s.lng]));
+STOPS.forEach(s=>{const m=L.marker([s.lat,s.lng],{icon:mkIcon(s,false,false)}).addTo(map);markers.set(s.id,m);m.on('click',()=>openDetail(s));});
+const allBounds=L.latLngBounds(STOPS.map(s=>[s.lat,s.lng]));
 map.fitBounds(allBounds.pad(0.12));
-
-function showOverlay(on){ on ? overlay.classList.add('show') : overlay.classList.remove('show'); }
-function openSidebar(){ sidebar.classList.add('open'); showOverlay(true); onLayoutChange(); }
-function closeSidebar(){ sidebar.classList.remove('open'); showOverlay(detail.classList.contains('open')); onLayoutChange(); }
-function openDetailSheet(){ detail.classList.add('open'); showOverlay(true); onLayoutChange(); }
-function closeDetailSheet(){ detail.classList.remove('open'); showOverlay(sidebar.classList.contains('open')); onLayoutChange(); }
-
-overlay.onclick = ()=>{ closeSidebar(); closeDetailSheet(); };
-
+function showOverlay(on){on?overlay.classList.add('show'):overlay.classList.remove('show');}
+function openSidebar(){sidebar.classList.add('open');showOverlay(true);onLayoutChange();}
+function closeSidebar(){sidebar.classList.remove('open');showOverlay(detail.classList.contains('open'));onLayoutChange();}
+function openDetailSheet(){detail.classList.add('open');showOverlay(true);onLayoutChange();}
+function closeDetailSheet(){detail.classList.remove('open');showOverlay(sidebar.classList.contains('open'));onLayoutChange();}
+overlay.onclick=()=>{closeSidebar();closeDetailSheet();};
 function applyFilter(){
-  const ids = new Set(FILTERS[activeKey].order);
-  markers.forEach((m,id)=>{
-    if(ids.has(id)){
-      if(!map.hasLayer(m)) m.addTo(map);
-      const s = stopById.get(id);
-      m.setIcon(mkIcon(s, id===selectedId, false));
-    } else {
-      if(map.hasLayer(m)) map.removeLayer(m);
-    }
-  });
+  const ids=new Set(FILTERS[activeKey].order);
+  markers.forEach((m,id)=>{if(ids.has(id)){if(!map.hasLayer(m)) m.addTo(map);const s=stopById.get(id);m.setIcon(mkIcon(s,id===selectedId,false));}else{if(map.hasLayer(m)) map.removeLayer(m);}});
 }
-
 function renderTabs(){
-  const host = document.getElementById('tabs');
-  host.innerHTML='';
-  const keys = Object.keys(FILTERS);
-  keys.forEach(k=>{
-    const b=document.createElement('button');
-    b.className='tab-btn'+(activeKey===k?' on':'');
-    b.textContent = FILTERS[k].label;
-    b.onclick = ()=>{
-      activeKey=k;
-      host.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));
-      b.classList.add('on');
-      document.getElementById('subtitle').textContent = FILTERS[k].subtitle;
-      selectedId=null;
-      applyFilter();
-      renderList();
-      const pts = FILTERS[activeKey].order.map(id=>{const s=stopById.get(id); return [s.lat,s.lng];});
-      if(pts.length>0) map.fitBounds(L.latLngBounds(pts).pad(0.12));
-      if(isMobile()) closeDetailSheet();
-    };
-    host.appendChild(b);
-  });
-  document.getElementById('subtitle').textContent = FILTERS[activeKey].subtitle;
+  const host=document.getElementById('tabs');host.innerHTML='';
+  Object.keys(FILTERS).forEach(k=>{const b=document.createElement('button');b.className='tab-btn'+(activeKey===k?' on':'');b.textContent=FILTERS[k].label;b.onclick=()=>{activeKey=k;host.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.getElementById('subtitle').textContent=FILTERS[k].subtitle;selectedId=null;applyFilter();renderList();const pts=FILTERS[activeKey].order.map(id=>{const s=stopById.get(id);return [s.lat,s.lng];});if(pts.length>0) map.fitBounds(L.latLngBounds(pts).pad(0.12));if(isMobile()) closeDetailSheet();};host.appendChild(b);});
+  document.getElementById('subtitle').textContent=FILTERS[activeKey].subtitle;
 }
-
 function renderList(){
-  const list=document.getElementById('list');
-  list.innerHTML='';
-  FILTERS[activeKey].order.forEach(id=>{
-    const s=stopById.get(id);
-    const row=document.createElement('div');
-    row.className='item'+(id===selectedId?' selected':'');
-    row.innerHTML = `
-      <div class="num c-${s.cat}">${stepNumber(id)}</div>
-      <div style="flex:1">
-        <div class="name">${(CAT[s.cat]||CAT.home).emoji} ${s.name}</div>
-        <div class="tag">${s.tag}</div>
-      </div>
-    `;
-    row.onclick=()=>openDetail(s);
-    list.appendChild(row);
-  });
+  const list=document.getElementById('list');list.innerHTML='';
+  FILTERS[activeKey].order.forEach(id=>{const s=stopById.get(id);const row=document.createElement('div');row.className='item'+(id===selectedId?' selected':'');row.innerHTML=`<div class="num c-${s.cat}">${stepNumber(id)}</div><div style="flex:1"><div class="name">${(CAT[s.cat]||CAT.home).emoji} ${s.name}</div><div class="tag">${s.tag}</div></div>`;row.onclick=()=>openDetail(s);list.appendChild(row);});
 }
-
 function setSelected(id){
-  selectedId=id;
-  applyFilter();
-  const s=stopById.get(id);
-  const m=markers.get(id);
-  if(m){
-    m.setIcon(mkIcon(s,true,true));
-    setTimeout(()=>m.setIcon(mkIcon(s,true,false)), 650);
-  }
-  renderList();
+  selectedId=id;applyFilter();const s=stopById.get(id);const m=markers.get(id);
+  if(m){m.setIcon(mkIcon(s,true,true));setTimeout(()=>m.setIcon(mkIcon(s,true,false)),650);}renderList();
 }
-
 function renderDetail(s){
-  const cat = (s.cat==='home') ? CAT.home : CAT[s.cat];
-  document.getElementById('detail-content').innerHTML = `
-    <div class="hero" style="background:linear-gradient(135deg,${cat.color}18,${cat.color}08)">
-      <div class="hero-top">
-        <div class="hero-num" style="background:${cat.color}">${stepNumber(s.id)}</div>
-        <div>
-          <div class="hero-cat">${cat.emoji} ${cat.label.toUpperCase()}</div>
-          <div class="hero-name">${s.name}</div>
-          <div class="hero-tag">${s.tag}</div>
-          <div class="btnrow">
-            <a class="btnlink" href="${s.url}" target="_blank" rel="noopener">🗺️ Google Maps</a>
-            <a class="btnlink secondary" href="${appleMapsUrl(s)}" target="_blank" rel="noopener">🍎 Apple Maps</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="section">
-      <h3>Coordinates</h3>
-      <p style="font-family:monospace;color:#666;">${Number(s.lat).toFixed(6)}, ${Number(s.lng).toFixed(6)}</p>
-    </div>
-  `;
+  const cat=(s.cat==='home')?CAT.home:CAT[s.cat];
+  document.getElementById('detail-content').innerHTML=`<div class="hero" style="background:linear-gradient(135deg,${cat.color}18,${cat.color}08)"><div class="hero-top"><div class="hero-num" style="background:${cat.color}">${stepNumber(s.id)}</div><div><div class="hero-cat">${cat.emoji} ${cat.label.toUpperCase()}</div><div class="hero-name">${s.name}</div><div class="hero-tag">${s.tag}</div><div class="btnrow"><a class="btnlink" href="${s.url}" target="_blank" rel="noopener">🗺️ Google Maps</a><a class="btnlink secondary" href="${appleMapsUrl(s)}" target="_blank" rel="noopener">🍎 Apple Maps</a></div></div></div></div><div class="section"><h3>Coordinates</h3><p style="font-family:monospace;color:#666;">${Number(s.lat).toFixed(6)}, ${Number(s.lng).toFixed(6)}</p></div>`;
 }
-
 function bottomCoverPx(){
-  if(!isMobile()) return 0;
-  let cover=0;
-  if(detail.classList.contains('open')) cover=Math.max(cover, detail.getBoundingClientRect().height);
-  if(sidebar.classList.contains('open')) cover=Math.max(cover, sidebar.getBoundingClientRect().height);
+  if(!isMobile()) return 0;let cover=0;
+  if(detail.classList.contains('open')) cover=Math.max(cover,detail.getBoundingClientRect().height);
+  if(sidebar.classList.contains('open')) cover=Math.max(cover,sidebar.getBoundingClientRect().height);
   return cover;
 }
-
-// ✅ padding-based centering fix
 function focusSelected(){
-  if(!selectedId) return;
-  const s = stopById.get(selectedId);
-  if(!s) return;
-  map.invalidateSize();
-  const padB = isMobile()? bottomCoverPx() : 0;
-  map.fitBounds(L.latLngBounds([[s.lat, s.lng]]), {
-    paddingTopLeft:[0,0],
-    paddingBottomRight:[0,padB],
-    maxZoom: 14,
-    animate:true,
-  });
+  if(!selectedId) return;const s=stopById.get(selectedId);if(!s) return;
+  map.invalidateSize();const padB=isMobile()?bottomCoverPx():0;
+  map.fitBounds(L.latLngBounds([[s.lat,s.lng]]),{paddingTopLeft:[0,0],paddingBottomRight:[0,padB],maxZoom:14,animate:true});
 }
-
-function onLayoutChange(){
-  setTimeout(()=>{ map.invalidateSize(); focusSelected(); }, 320);
-}
-
-function openDetail(s){
-  setSelected(s.id);
-  renderDetail(s);
-  openDetailSheet();
-  if(isMobile()) closeSidebar();
-  setTimeout(focusSelected, 320);
-}
-
-document.getElementById('close-detail').onclick = ()=>{ closeDetailSheet(); setTimeout(focusSelected, 320); };
-
+function onLayoutChange(){setTimeout(()=>{map.invalidateSize();focusSelected();},320);}
+function openDetail(s){setSelected(s.id);renderDetail(s);openDetailSheet();if(isMobile()) closeSidebar();setTimeout(focusSelected,320);}
+document.getElementById('close-detail').onclick=()=>{closeDetailSheet();setTimeout(focusSelected,320);};
 const fabStops=document.getElementById('fabStops');
 const fabFull=document.getElementById('fabFull');
-
-fabStops.onclick=()=>{ if(sidebar.classList.contains('open')) closeSidebar(); else { openSidebar(); closeDetailSheet(); } };
-
-fabFull.onclick=()=>{
-  closeSidebar(); closeDetailSheet(); selectedId=null; applyFilter(); renderList();
-  map.fitBounds(allBounds.pad(0.16), {animate:true});
-  showOverlay(false);
-};
-
-function makeSheetSwipe(el, handleEl){
-  let startY=0, startT=0, lastPx=0, dragging=false;
-  function open(){ el.classList.add('open'); el.style.transform=''; onLayoutChange(); }
-  function close(){ el.classList.remove('open'); el.style.transform=''; onLayoutChange(); }
-  function currentTranslatePx(){ const h=el.getBoundingClientRect().height; return el.classList.contains('open')?0:h; }
-  function setTranslate(px){ el.style.transition='none'; el.style.transform=`translateY(${px}px)`; }
-  function settle(px){
-    const h=el.getBoundingClientRect().height;
-    const shouldOpen = px < h/2;
-    el.style.transition='';
-    el.style.transform='';
-    if(shouldOpen) open(); else close();
-    if(isMobile()) showOverlay(sidebar.classList.contains('open') || detail.classList.contains('open'));
-  }
-  function onStart(y){ if(!isMobile()) return; dragging=true; startY=y; startT=currentTranslatePx(); lastPx=startT; showOverlay(true); }
-  function onMove(y){ if(!dragging) return; const dy=y-startY; const h=el.getBoundingClientRect().height; let px=startT+dy; px=Math.max(0,Math.min(h,px)); lastPx=px; setTranslate(px); }
-  function onEnd(){ if(!dragging) return; dragging=false; settle(lastPx); }
-  handleEl.addEventListener('touchstart', e=>{ if(e.touches.length) onStart(e.touches[0].clientY); }, {passive:true});
-  handleEl.addEventListener('touchmove', e=>{ if(e.touches.length) onMove(e.touches[0].clientY); }, {passive:true});
-  handleEl.addEventListener('touchend', ()=>onEnd(), {passive:true});
-  handleEl.addEventListener('click', ()=>{ if(!isMobile()) return; el.classList.contains('open')?close():open(); });
+fabStops.onclick=()=>{if(sidebar.classList.contains('open')) closeSidebar(); else {openSidebar();closeDetailSheet();}};
+fabFull.onclick=()=>{closeSidebar();closeDetailSheet();selectedId=null;applyFilter();renderList();map.fitBounds(allBounds.pad(0.16),{animate:true});showOverlay(false);};
+function makeSheetSwipe(el,handleEl){
+  let startY=0,startT=0,lastPx=0,dragging=false;
+  function open(){el.classList.add('open');el.style.transform='';onLayoutChange();}
+  function close(){el.classList.remove('open');el.style.transform='';onLayoutChange();}
+  function currentTranslatePx(){const h=el.getBoundingClientRect().height;return el.classList.contains('open')?0:h;}
+  function setTranslate(px){el.style.transition='none';el.style.transform=`translateY(${px}px)`;}
+  function settle(px){const h=el.getBoundingClientRect().height;const shouldOpen=px<h/2;el.style.transition='';el.style.transform='';if(shouldOpen) open(); else close();if(isMobile()) showOverlay(sidebar.classList.contains('open')||detail.classList.contains('open'));}
+  function onStart(y){if(!isMobile()) return;dragging=true;startY=y;startT=currentTranslatePx();lastPx=startT;showOverlay(true);} 
+  function onMove(y){if(!dragging) return;const dy=y-startY;const h=el.getBoundingClientRect().height;let px=startT+dy;px=Math.max(0,Math.min(h,px));lastPx=px;setTranslate(px);} 
+  function onEnd(){if(!dragging) return;dragging=false;settle(lastPx);} 
+  handleEl.addEventListener('touchstart',e=>{if(e.touches.length) onStart(e.touches[0].clientY);},{passive:true});
+  handleEl.addEventListener('touchmove',e=>{if(e.touches.length) onMove(e.touches[0].clientY);},{passive:true});
+  handleEl.addEventListener('touchend',()=>onEnd(),{passive:true});
+  handleEl.addEventListener('click',()=>{if(!isMobile()) return;el.classList.contains('open')?close():open();});
 }
-
-makeSheetSwipe(sidebar, document.getElementById('sidebarHandle'));
-makeSheetSwipe(detail, document.getElementById('detailHandle'));
-
-renderTabs();
-applyFilter();
-renderList();
-if(isMobile()) { closeSidebar(); closeDetailSheet(); showOverlay(false); }
+makeSheetSwipe(sidebar,document.getElementById('sidebarHandle'));
+makeSheetSwipe(detail,document.getElementById('detailHandle'));
+renderTabs();applyFilter();renderList();
+if(isMobile()){closeSidebar();closeDetailSheet();showOverlay(false);} 
 </script>
 </body>
 </html>
