@@ -329,13 +329,26 @@ const CAT_LABEL ={beach:'Beach',nature:'Nature',bio:'Bio Bay',history:'History',
 const CAT_COLOR ={beach:'#0096C7',nature:'#1A7A4A',bio:'#06D6A0',history:'#E07B54',home:'#9B59B6'};
 const CAT_ACCENT={beach:'#0077B6',nature:'#145A35',bio:'#007A5E',history:'#7A3E0A',home:'#7D3C98'};
 
+
 const DRIVE = {
-  1:{miles:5.4,mins:15}, 2:{miles:5.5,mins:15}, 3:{miles:5.7,mins:15},
-  4:{miles:3.9,mins:10}, 5:{miles:4.4,mins:10}, 6:{miles:1.0,mins:5},
-  7:{miles:1.0,mins:5},  8:{miles:7.4,mins:20}, 9:{miles:6.7,mins:20},
-  10:{miles:5.2,mins:15},11:{miles:6.3,mins:15},12:{miles:8.6,mins:25},
-  13:{miles:2.1,mins:5}, 14:{miles:0.9,mins:5}, 15:{miles:6.7,mins:20},
-  16:{miles:3.4,mins:10},17:{miles:6.6,mins:20},18:{miles:5.7,mins:15}
+  1:{miles:5.4,mins:15},
+  2:{miles:5.5,mins:15},
+  3:{miles:5.7,mins:15},
+  4:{miles:3.9,mins:10},
+  5:{miles:4.4,mins:10},
+  6:{miles:1.0,mins:5},
+  7:{miles:1.0,mins:5},
+  8:{miles:7.4,mins:20},
+  9:{miles:6.7,mins:20},
+  10:{miles:5.2,mins:15},
+  11:{miles:6.3,mins:15},
+  12:{miles:8.6,mins:25},
+  13:{miles:2.1,mins:5},
+  14:{miles:0.9,mins:5},
+  15:{miles:6.7,mins:20},
+  16:{miles:3.4,mins:10},
+  17:{miles:6.6,mins:20},
+  18:{miles:5.7,mins:15}
 };
 
 const stops=[
@@ -356,9 +369,7 @@ const stops=[
   {id:15,name:"La Laguna (Kiani Lagoon)",   cat:"nature", lat:18.1030,lng:-65.4720,tagline:"Mangrove lagoon kayaking & birding",           desc:"A protected mangrove lagoon near Esperanza. Kayaking through the narrow mangrove channels at dawn is one of Vieques' most peaceful experiences. Herons, kingfishers, and pelicans are regulars.",tips:["Kayak rentals available in Esperanza","Dawn paddling has the best birdlife","Great complement to the bio bay at night"],hours:"Dawn – Dusk",duration:"2 hrs",best:"Early morning"},
   {id:16,name:"Cerro Ventana",              cat:"nature", lat:18.1350,lng:-65.4600,tagline:"Natural rock window with panoramic views",     desc:"A short hike through dry forest leads to a natural rock formation with a 'window' opening that frames a breathtaking view of the island's interior and both coasts.",tips:["A local guide helps find the trailhead","Bring water — no shade on upper section","Best light is mid-morning"],hours:"Dawn – Dusk",duration:"2–3 hrs",best:"Morning"},
   {id:17,name:"Taíno Cultural Site",        cat:"history",lat:18.1200,lng:-65.4900,tagline:"Evidence of the island's first inhabitants",   desc:"Vieques was inhabited by the Taíno for centuries before European contact. The museum at El Fortín houses recovered artifacts and explains the Taíno heritage still echoed in local place names.",tips:["The fort museum covers this in detail","Some petroglyphs accessible with a local guide","'Vieques' likely derives from a Taíno word"],hours:"Via museum Tue–Sun",duration:"45 min",best:"Anytime"},
-  {id:18,name:"Playa La Plata",             cat:"beach",  lat:18.1080,lng:-65.4600,tagline:"The island's best-kept secret beach",          desc:"La Plata is a small crescent of powder-white sand with calm, clear water, accessible only via a rough track and short walk. No facilities, no crowds — just waves.",tips:["Ask a trusted local for the exact location","4WD is essential","Pack in everything and pack out all trash"],hours:"Dawn – Dusk",duration:"2–3 hrs",best:"Morning"}
-  {id:19,name:"Home Base",          cat:"home", isHome:true,   lat:18.157917,lng:-65.435639,tagline:"Home base — June 1–6, 2026",          desc:"Your home for the week! Check-in June 1, check-out June 6 2026. A perfect base for exploring the island — close to Isabel Segunda and within easy reach of the beaches, bio bay, and Wildlife Refuge.",tips:["Check-in: June 1, 2026","Check-out: June 6, 2026","Isabel Segunda is just a short drive away","Stock up on groceries at the market in town on arrival","The bio bay tour operators in Esperanza are about 20 minutes away"],hours:"Check-in Jun 1 · Check-out Jun 6",duration:"5 nights",best:"Home base!"},
-];
+  {id:18,name:"Playa La Plata",             cat:"beach",  lat:18.1080,lng:-65.4600,tagline:"The island's best-kept secret beach",          desc:"La Plata is a small crescent of powder-white sand with calm, clear water, accessible only via a rough track and short walk. No facilities, no crowds — just waves.",tips:["Ask a trusted local for the exact location","4WD is essential","Pack in everything and pack out all trash"],hours:"Dawn – Dusk",duration:"2–3 hrs",best:"Morning"}];
 
 const itinerary=[
   {day:1,time:"7:00 AM", stopId:14,note:"Sunrise from the lighthouse before town wakes up"},
@@ -374,7 +385,8 @@ const itinerary=[
   {day:2,time:"10:30 AM",stopId:2, note:"Snorkel the reef at Media Luna"},
   {day:2,time:"12:30 PM",stopId:17,note:"Learn about Taíno people and island heritage"},
   {day:2,time:"2:00 PM", stopId:16,note:"Hike to the natural rock window for panoramic views"},
-  {day:2,time:"4:30 PM", stopId:12,note:"Green Beach for the best sunset on the island 🌅"}
+  {day:2,time:"4:30 PM", stopId:12,note:"Green Beach for the best sunset on the island 🌅"},
+  {id:19,name:"Home Base",cat:"home",lat:18.157917,lng:-65.435639,tagline:"Home base - June 1 to 6 2026",desc:"Your home for the week! Check-in June 1, check-out June 6, 2026. A perfect base for exploring the island - close to Isabel Segunda and within easy reach of the beaches, bio bay, and Wildlife Refuge.",tips:["Check-in: June 1, 2026","Check-out: June 6, 2026","Isabel Segunda is just a short drive away","Stock up on groceries in town on arrival","Bio bay tour operators in Esperanza are about 20 minutes away"],hours:"Jun 1 - Jun 6, 2026",duration:"5 nights",best:"Home base!"}
 ];
 
 const history=[
@@ -438,7 +450,7 @@ function openDetail(stop){
       <div class="detail-cat" style="color:${a}">${CAT_LABEL[stop.cat]}</div>
       <div class="detail-name">${stop.name}</div>
       <div class="detail-tagline">${stop.tagline}</div>
-      ${DRIVE[stop.id] ? `<div style="margin-top:.75rem;display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,0,0,.06);border-radius:20px;padding:.3rem .85rem;font-size:.78rem;font-weight:700;color:#555;">🚗 ${DRIVE[stop.id].mins} min from Home Base &nbsp;·&nbsp; ${DRIVE[stop.id].miles} mi</div>` : ''}
+      ${DRIVE[stop.id] ? '<div style="margin-top:.75rem;display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,0,0,.06);border-radius:20px;padding:.3rem .85rem;font-size:.78rem;font-weight:700;color:#555;">🚗 ' + DRIVE[stop.id].mins + ' min from Home Base · ' + DRIVE[stop.id].miles + ' mi</div>' : ''}
     </div>
     <div class="detail-meta">
       <div class="meta-cell"><div class="lbl">Duration</div><div class="val">${stop.duration}</div></div>
@@ -467,7 +479,7 @@ function renderStops(){
         <div class="stop-name">${CAT_EMOJI[s.cat]} ${s.name}</div>
         <div class="stop-tagline">${s.tagline}</div>
         <span class="stop-pill p-${s.cat}">${CAT_LABEL[s.cat]}</span>
-        ${DRIVE[s.id] ? `<span style="font-size:.62rem;font-weight:700;color:#888;margin-left:.3rem;">🚗 ${DRIVE[s.id].mins} min</span>` : ''}
+        ${DRIVE[s.id] ? '<span style="font-size:.62rem;font-weight:700;color:#888;margin-left:.3rem;">🚗 ' + DRIVE[s.id].mins + ' min</span>' : ''}
       </div>
     </div>`).join('');
 }
