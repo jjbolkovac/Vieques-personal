@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="ens">
 <head>
  <meta charset="utf-8"/>
  <meta name="viewport" content="width=device-width,initial-scale=1"/>
- <title>Vieques — Island Tour (EXTREME + Full Details)</title>
+ <title>Vieques — Island Tour (EXTREME + Full Destinations)</title>
  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
  <style>
- :root{--sun:#FFD93D;--coral:#FF6B6B;--ocean:#0096C7;--teal:#00B4D8;--lime:#06D6A0;--ink:#102028;--muted:#5c7680}
+ :root{--sun:#FFD93D;--coral:#FF6B6B;--ocean:#0096C7;--ink:#102028;--muted:#5c7680}
  *{box-sizing:border-box}html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
  #wrap{display:grid;grid-template-columns:340px 1fr;height:100%}
  #sidebar{background:rgba(255,255,255,.98);border-right:4px solid var(--sun);overflow:auto}
@@ -15,14 +15,12 @@
  header{padding:14px 16px;border-bottom:1px solid #eee}
  header h1{margin:0;font-size:18px}
  header p{margin:6px 0 0;color:var(--muted);font-weight:600;font-size:12px}
- .home-card{margin:12px;padding:12px;border-radius:14px;border:3px solid var(--sun);background:linear-gradient(135deg,rgba(155,89,182,.12),rgba(255,217,61,.18))}
  .list{padding:8px 12px 14px}
  .item{padding:10px;border-radius:12px;border:1px solid #eee;margin:8px 0;cursor:pointer}
  .item:hover{background:#f7fbff}
  .name{font-weight:900;font-size:13px}
  .tag{font-size:12px;color:var(--muted);font-weight:700}
- /* drawer */
- #detail{position:fixed;top:0;right:0;width:380px;height:100%;background:#fff;transform:translateX(100%);transition:.35s ease;z-index:999;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.25)}
+ #detail{position:fixed;top:0;right:0;width:390px;height:100%;background:#fff;transform:translateX(100%);transition:.35s ease;z-index:999;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.25)}
  #detail.open{transform:translateX(0)}
  #close-detail{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:var(--coral);color:#fff;font-weight:900;cursor:pointer}
  .detail-hero{padding:18px 16px;border-bottom:3px dashed #eee}
@@ -43,8 +41,7 @@
 <body>
 <div id="wrap">
  <div id="sidebar">
-  <header><h1>Vieques — Island Tour</h1><p>EXTREME map + full stop details</p></header>
-  <div class="home-card"><strong>🏠 Home Base</strong><br/>June 1–6, 2026</div>
+  <header><h1>Vieques — Island Tour</h1><p>EXTREME map + all destinations</p></header>
   <div class="list" id="list"></div>
  </div>
  <div id="map"></div>
@@ -56,16 +53,15 @@
 </div>
 
 <script>
-const CAT_COLOR={beach:'#0096C7',nature:'#1A7A4A',bio:'#06D6A0',history:'#E07B54',home:'#9B59B6'};
-const HOME_BASE={id:19,name:'Home Base',cat:'home',lat:18.157917,lng:-65.435639,tagline:'Home base — June 1 to 6, 2026',desc:'Your home for the week!',tips:['Check‑in June 1','Check‑out June 6'],hours:'Jun 1–6',duration:'5 nights',best:'Always'};
-const STOPS = 
-[
-{id:1,name:'Sun Bay (Sombé)',cat:'beach',lat:18.1057,lng:-65.4380,tagline:'The island's most beloved public beach',desc:'Sun Bay is the crown jewel...',tips:['Arrive early','Sea grape shade','Walk to Media Luna'],hours:'7am – 6pm',duration:'2–3 hrs',best:'Morning'},
-{id:2,name:'Media Luna Beach',cat:'beach',lat:18.1048,lng:-65.4313,tagline:'Secluded crescent with reef snorkeling',desc:'A short walk east...',tips:['Bring snorkel','Quiet weekdays','Foot access only'],hours:'Dawn – Dusk',duration:'1–2 hrs',best:'Morning'}
-]
-;
+const STOPS = [
+ {id:1,name:'Sun Bay (Sombé)',cat:'beach',lat:18.1057,lng:-65.4380,tagline:'The island's most beloved public beach',desc:'Sun Bay is the crown jewel of Vieques...',tips:['Arrive early','Sea grape shade','Walk to Media Luna'],hours:'7am – 6pm',duration:'2–3 hrs',best:'Morning'},
+ {id:2,name:'Media Luna Beach',cat:'beach',lat:18.1048,lng:-65.4313,tagline:'Secluded crescent with reef snorkeling',desc:'A short walk east from Sun Bay...',tips:['Bring snorkel','Quiet weekdays','Foot access only'],hours:'Dawn – Dusk',duration:'1–2 hrs',best:'Morning'},
+ {id:3,name:'Navio Beach',cat:'beach',lat:18.1038,lng:-65.4246,tagline:'Wild & remote Atlantic-facing beach',desc:'One of the most remote beaches...',tips:['4WD recommended','Bring everything','Strong surf'],hours:'Dawn – Dusk',duration:'1–2 hrs',best:'Afternoon'},
+ {id:4,name:'Mosquito Pier',cat:'nature',lat:18.14,lng:-65.47,tagline:'Snorkeling & historic Navy-era pier',desc:'Decommissioned Navy pier...',tips:['Morning snorkeling','Watch for rays','Sunset photos'],hours:'Dawn – Dusk',duration:'1–2 hrs',best:'Morning or Sunset'},
+ {id:5,name:'Bioluminescent Bay',cat:'bio',lat:18.1258,lng:-65.4648,tagline:'The brightest bio bay in the world ✨',desc:'Guinness World Record bio bay...',tips:['No-moon nights','Kayak tours','No sunscreen'],hours:'Tours from 7pm',duration:'2 hrs',best:'New moon'}
+];
 
-const map=L.map('map',{center:[HOME_BASE.lat,HOME_BASE.lng],zoom:13});
+const map=L.map('map',{center:[18.157917,-65.435639],zoom:13});
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}).addTo(map);
 let justOpened=false;
 const detail=document.getElementById('detail');
@@ -76,9 +72,7 @@ document.getElementById('detail-content').innerHTML=`
   <div class='detail-name'>${s.name}</div>
   <div class='detail-tagline'>${s.tagline}</div>
  </div>
- <div class='meta'>
-  <div>${s.duration}</div><div>${s.best}</div><div>${s.hours}</div>
- </div>
+ <div class='meta'><div>${s.duration}</div><div>${s.best}</div><div>${s.hours}</div></div>
  <div class='section'><h3>About</h3><p>${s.desc}</p></div>
  <div class='section'><h3>Local Tips</h3><ul>${s.tips.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
 detail.classList.add('open')}
