@@ -1,349 +1,166 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Vieques — Filters + Bounce + Sync (Working)</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vieques – Island Tour (Stable)</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <style>
-    :root { --sun:#FFD93D; --coral:#FF6B6B; --ink:#102028; --muted:#5c7680; }
-    *{box-sizing:border-box} html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+<style>
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+#wrap{display:grid;grid-template-columns:340px 1fr;height:100%}
+#sidebar{background:#fff;border-right:4px solid #FFD93D;overflow:auto}
+#map{height:100%}
 
-    #wrap{display:grid;grid-template-columns:340px 1fr;height:100%;}
-    #sidebar{background:rgba(255,255,255,.98);border-right:4px solid var(--sun);overflow:auto;}
-    #map{height:100%;}
+header{padding:14px 16px;border-bottom:1px solid #eee}
+header h1{margin:0;font-size:18px}
+header p{margin:6px 0 0;color:#5c7680;font-size:12px;font-weight:700}
 
-    header{padding:14px 16px;border-bottom:1px solid #eee;}
-    header h1{margin:0;font-size:18px;}
-    header p{margin:6px 0 0;color:var(--muted);font-weight:600;font-size:12px;}
+.list{padding:10px}
+.item{display:flex;gap:10px;border:1px solid #eee;border-radius:12px;padding:10px;margin-bottom:8px;cursor:pointer}
+.item:hover{background:#f7fbff}
+.item.selected{outline:3px solid rgba(0,0,0,.08)}
 
-    .home-card{margin:12px 12px 8px;padding:12px;border-radius:14px;border:3px solid var(--sun);
-      background:linear-gradient(135deg,rgba(155,89,182,.12),rgba(255,217,61,.18));}
-    .home-title{display:flex;gap:10px;align-items:center;font-weight:900;}
-    .home-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      background:#9B59B6;color:#fff;font-size:18px;box-shadow:0 8px 18px rgba(0,0,0,.22);}
-    .home-coord{margin-top:8px;font-size:12px;color:var(--muted);font-weight:700;}
+.num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+.beach{background:#0096C7}
+.nature{background:#1A7A4A}
+.bio{background:#06D6A0}
+.history{background:#E07B54}
+.home{background:#9B59B6}
 
-    .btn{display:inline-flex;gap:8px;align-items:center;margin-top:10px;padding:10px 12px;border:none;border-radius:999px;
-      background:#9B59B6;color:white;font-weight:900;cursor:pointer;box-shadow:0 6px 0 #6d3a85;}
-    .btn:active{transform:translateY(2px);box-shadow:0 4px 0 #6d3a85;}
+.name{font-weight:900;font-size:13px}
+.tag{font-size:12px;color:#5c7680;font-weight:700}
 
-    .filter-row{display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid #eee;background:#fff;position:sticky;top:0;z-index:5}
-    .filter-btn{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;
-      border:2px solid #e6e6e6;background:#fff;color:#567;cursor:pointer}
-    .filter-btn.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.stop-marker{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#fff;border:3px solid #fff;
+  box-shadow:0 6px 16px rgba(0,0,0,.25)
+}
 
-    .list{padding:8px 12px 14px;}
-    .item{padding:10px;border-radius:12px;border:1px solid #eee;margin:8px 0;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
-    .item:hover{background:#f7fbff;}
-    .item.selected{outline:3px solid rgba(0,0,0,.08);background:#f7fbff}
+.m-beach{background:#0096C7}
+.m-nature{background:#1A7A4A}
+.m-bio{background:#06D6A0}
+.m-history{background:#E07B54}
 
-    .num-badge{width:32px;height:32px;min-width:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;font-size:12px;color:#fff;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.18)}
-    .num-beach{background:#0096C7}.num-nature{background:#1A7A4A}.num-bio{background:#06D6A0}.num-history{background:#E07B54}.num-home{background:#9B59B6}
-
-    .name{font-weight:900;color:var(--ink);font-size:13px;}
-    .tag{font-size:12px;color:var(--muted);font-weight:700;margin-top:3px;}
-    .stop-pill{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-    .p-beach{background:#DBEEFF;color:#0077B6}
-    .p-nature{background:#D8F5E3;color:#1A7A4A}
-    .p-bio{background:#C8FFF0;color:#007A5E}
-    .p-history{background:#FFE8D6;color:#7A3E0A}
-    .p-home{background:#F5EEF8;color:#7D3C98}
-
-    /* Home marker */
-    .home-pin{position:relative;width:64px;height:64px;border-radius:50%;background:#9B59B6;border:6px solid #fff;
-      box-shadow:0 14px 30px rgba(0,0,0,.38);display:flex;align-items:center;justify-content:center;}
-    .home-pin span{font-size:30px;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));}
-    .home-pin::before{content:'';position:absolute;inset:-18px;border-radius:50%;border:6px solid rgba(255,217,61,.95);
-      box-shadow:0 0 0 10px rgba(255,217,61,.25);animation:pulse 1.2s ease-out infinite;}
-    @keyframes pulse{0%{transform:scale(.55);opacity:1} 100%{transform:scale(1.35);opacity:0}}
-    .home-label{background:#fff;color:#7D3C98;border:4px solid #FFD93D;border-radius:999px;padding:8px 12px;
-      font-weight:1000;font-size:16px;box-shadow:0 14px 30px rgba(0,0,0,.28);white-space:nowrap;}
-
-    /* Map numbered markers */
-    .stop-marker{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.25)}
-    .m-beach{background:#0096C7}.m-nature{background:#1A7A4A}.m-bio{background:#06D6A0}.m-history{background:#E07B54}
-    .stop-marker.selected{outline:4px solid rgba(255,217,61,.95)}
-
-    @keyframes bounce{0%{transform:translateY(0)}30%{transform:translateY(-16px)}50%{transform:translateY(0)}70%{transform:translateY(-8px)}100%{transform:translateY(0)}}
-    .bounce{animation:bounce .6s ease}
-
-    /* drawer */
-    #detail{position:fixed;top:0;right:0;width:390px;height:100%;background:#fff;transform:translateX(100%);
-      transition:transform .35s ease;z-index:999;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.25)}
-    #detail.open{transform:translateX(0)}
-    #close-detail{position:absolute;top:14px;right:14px;border:none;background:var(--coral);color:#fff;width:34px;height:34px;
-      border-radius:50%;font-weight:900;cursor:pointer}
-
-    .accent-beach{border-left:6px solid #0096C7}
-    .accent-nature{border-left:6px solid #1A7A4A}
-    .accent-bio{border-left:6px solid #06D6A0}
-    .accent-history{border-left:6px solid #E07B54}
-    .accent-home{border-left:6px solid #9B59B6}
-
-    .detail-hero{padding:18px 16px;border-bottom:3px dashed #eee}
-    .detail-top{display:flex;gap:10px;align-items:flex-start}
-    .detail-num{width:42px;height:42px;min-width:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;font-size:13px;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.22)}
-    .detail-num.num-beach{background:#0096C7}.detail-num.num-nature{background:#1A7A4A}.detail-num.num-bio{background:#06D6A0}.detail-num.num-history{background:#E07B54}.detail-num.num-home{background:#9B59B6}
-
-    .detail-cat{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-    .detail-name{font-size:22px;font-weight:900;margin:4px 0}
-    .detail-tagline{font-size:14px;color:#555;font-style:italic}
-    .drive-badge{display:inline-flex;gap:6px;align-items:center;margin-top:8px;padding:6px 12px;border-radius:999px;
-      background:rgba(0,0,0,.06);font-size:12px;font-weight:800;color:#444}
-
-    .meta{display:grid;grid-template-columns:repeat(3,1fr);margin:12px 16px;border:2px solid #f0f0f0;border-radius:12px;overflow:hidden}
-    .meta .cell{padding:8px;font-size:12px;font-weight:800;border-right:1px solid #eee}
-    .meta .cell:last-child{border-right:none}
-    .cell .lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-    .cell .val{font-size:12px;color:#333}
-
-    .section{padding:14px 16px;border-bottom:1px dashed #eee}
-    .section h3{margin:0 0 6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-    .section p,.section li{font-size:14px;line-height:1.65}
-    .section ul{list-style:none;padding-left:0;margin:0}
-    .section li{padding-left:18px;position:relative;margin:6px 0}
-    .section li::before{content:'🌴';position:absolute;left:0}
-  </style>
+@keyframes bounce{
+  0%{transform:translateY(0)}
+  30%{transform:translateY(-16px)}
+  50%{transform:translateY(0)}
+  70%{transform:translateY(-8px)}
+  100%{transform:translateY(0)}
+}
+.bounce{animation:bounce .6s ease}
+</style>
 </head>
+
 <body>
-  <div id="wrap">
-    <div id="sidebar">
-      <header>
-        <h1>Vieques — Island Tour</h1>
-        <p>Filters • bounce • synced number badges</p>
-      </header>
-
-      <div class="home-card">
-        <div class="home-title"><div class="home-badge">🏠</div><div>
-          <div style="font-size:14px;">HOME BASE</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:800;">June 1–6, 2026</div>
-        </div></div>
-        <div class="home-coord">18.157917, -65.435639</div>
-        <button class="btn" id="gotoHome">📍 Zoom to Home Base</button>
-      </div>
-
-      <div class="filter-row" id="filters"></div>
-      <div class="list" id="list"></div>
-    </div>
-
-    <div id="map"></div>
+<div id="wrap">
+  <div id="sidebar">
+    <header>
+      <h1>Vieques – Island Tour</h1>
+      <p>All destinations • numbered • stable</p>
+    </header>
+    <div class="list" id="list"></div>
   </div>
-
-  <div id="detail">
-    <button id="close-detail">✕</button>
-    <div id="detail-content"></div>
-  </div>
+  <div id="map"></div>
+</div>
 
 <script>
-const STOPS = [];
-const HOME_BASE = STOPS.find(s => s.cat === 'home');
-const CAT_LABEL = { beach:'Beach', nature:'Nature', bio:'Bio Bay', history:'History', home:'Home' };
-const CAT_EMOJI = { beach:'🏖️', nature:'🌿', bio:'✨', history:'🏰', home:'🏠' };
-const colors = { beach:'#0096C7', nature:'#1A7A4A', bio:'#06D6A0', history:'#E07B54', home:'#9B59B6' };
+/* ---------- DATA (EXPLICIT, NO PLACEHOLDERS) ---------- */
+const STOPS = [
+  {id:1,name:"Sun Bay",cat:"beach",lat:18.1057,lng:-65.4380,tag:"Main public beach"},
+  {id:2,name:"Media Luna",cat:"beach",lat:18.1048,lng:-65.4313,tag:"Quiet crescent beach"},
+  {id:3,name:"Navio Beach",cat:"beach",lat:18.1038,lng:-65.4246,tag:"Wild & remote"},
+  {id:4,name:"Mosquito Pier",cat:"nature",lat:18.14,lng:-65.47,tag:"Snorkeling pier"},
+  {id:5,name:"Bio Bay",cat:"bio",lat:18.1258,lng:-65.4648,tag:"Brightest bio bay"},
+  {id:6,name:"Fortín Mirasol",cat:"history",lat:18.1516,lng:-65.4434,tag:"Spanish fort"},
+  {id:7,name:"Esperanza",cat:"history",lat:18.0946,lng:-65.4714,tag:"Waterfront village"},
+  {id:8,name:"Isabel Segunda",cat:"history",lat:18.1527,lng:-65.4440,tag:"Main town"},
+  {id:9,name:"Home Base",cat:"home",lat:18.157917,lng:-65.435639,tag:"Your stay"}
+];
 
-function driveFromHome(lat,lng){
-  const R=3958.8;
-  const dLat=(lat-HOME_BASE.lat)*Math.PI/180;
-  const dLng=(lng-HOME_BASE.lng)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2 + Math.cos(HOME_BASE.lat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLng/2)**2;
-  const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-  const miles=R*c;
-  const mins=Math.max(1, Math.round((miles/30)*60));
-  return { miles:miles.toFixed(1), mins };
-}
+const CAT_EMOJI = {
+  beach:"🏖️",nature:"🌿",bio:"✨",history:"🏰",home:"🏠"
+};
 
-// Map
-const map = L.map('map', { center: [HOME_BASE.lat, HOME_BASE.lng], zoom: 12, zoomControl: false });
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '© OpenStreetMap contributors'
+/* ---------- MAP ---------- */
+const map = L.map("map",{center:[18.12,-65.45],zoom:12});
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+  maxZoom:19,attribution:"© OpenStreetMap"
 }).addTo(map);
-L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-// Home highlight
-L.circle([HOME_BASE.lat, HOME_BASE.lng], { radius: 1000, color:'#FFD93D', weight:6, opacity:1, fillColor:'#9B59B6', fillOpacity:0.12 }).addTo(map);
-const homeIcon = L.divIcon({ className:'', html:'<div class="home-pin"><span>🏠</span></div>', iconSize:[64,64], iconAnchor:[32,32], popupAnchor:[0,-36] });
-const homeMarker = L.marker([HOME_BASE.lat, HOME_BASE.lng], { icon: homeIcon }).addTo(map);
-homeMarker.bindPopup('<b>🏠 Home Base</b><br/>' + HOME_BASE.lat.toFixed(6) + ', ' + HOME_BASE.lng.toFixed(6)).openPopup();
-L.marker([HOME_BASE.lat, HOME_BASE.lng], { interactive:false, icon: L.divIcon({ className:'', html:'<div class="home-label">🏠 HOME BASE</div>', iconSize:[180,44], iconAnchor:[90,66] }) }).addTo(map);
-
-let activeFilter = 'all';
-let selectedId = null;
-let justOpened = false;
-
-const detail = document.getElementById('detail');
+/* ---------- MARKERS ---------- */
 const markers = new Map();
 
-function makeStopIcon(stop, opts={}){
-  const cls = ['stop-marker', 'm-'+stop.cat];
-  if(opts.selected) cls.push('selected');
-  if(opts.bounce) cls.push('bounce');
-  return L.divIcon({
-    className: '',
-    html: `<div class="${cls.join(' ')}">${stop.id}</div>`,
-    iconSize: [36,36],
-    iconAnchor: [18,18],
-    popupAnchor: [0,-18]
+STOPS.forEach(s=>{
+  const icon = L.divIcon({
+    className:"",
+    html:`<div class="stop-marker m-${s.cat}">${s.id}</div>`,
+    iconSize:[36,36],
+    iconAnchor:[18,18]
   });
-}
-
-function setMarkerSelected(stopId){
-  if(selectedId && markers.has(selectedId)){
-    const prev = markers.get(selectedId);
-    const sPrev = STOPS.find(s=>s.id===selectedId);
-    if(sPrev) prev.setIcon(makeStopIcon(sPrev, {selected:false, bounce:false}));
-  }
-  selectedId = stopId;
-  if(stopId && markers.has(stopId)){
-    const s = STOPS.find(x=>x.id===stopId);
-    const m = markers.get(stopId);
-    m.setIcon(makeStopIcon(s, {selected:true, bounce:true}));
-    setTimeout(()=>{
-      if(markers.has(stopId)) markers.get(stopId).setIcon(makeStopIcon(s, {selected:true, bounce:false}));
-    }, 650);
-  }
-}
-
-function renderDetail(s){
-  const d = driveFromHome(s.lat, s.lng);
-  let tipsHtml='';
-  (s.tips||[]).forEach(t=>{ tipsHtml += '<li>'+t+'</li>'; });
-
-  const hero = '<div class="detail-hero accent-'+s.cat+'">'
-    + '<div class="detail-top">'
-    + '<div class="detail-num num-'+s.cat+'">'+s.id+'</div>'
-    + '<div>'
-    + '<div class="detail-cat">'+CAT_EMOJI[s.cat]+' '+CAT_LABEL[s.cat].toUpperCase()+'</div>'
-    + '<div class="detail-name">'+s.name+'</div>'
-    + '<div class="detail-tagline">'+s.tagline+'</div>'
-    + '<div class="drive-badge">🚗 '+d.mins+' min · '+d.miles+' mi from Home Base</div>'
-    + '</div></div>'
-    + '</div>';
-
-  const meta = '<div class="meta">'
-    + '<div class="cell"><div class="lbl">Duration</div><div class="val">'+(s.duration||'')+'</div></div>'
-    + '<div class="cell"><div class="lbl">Best</div><div class="val">'+(s.best||'')+'</div></div>'
-    + '<div class="cell"><div class="lbl">Hours</div><div class="val">'+(s.hours||'')+'</div></div>'
-    + '</div>';
-
-  const about = '<div class="section"><h3>About</h3><p>'+(s.desc||'')+'</p></div>';
-  const tips = '<div class="section"><h3>Local Tips</h3><ul>'+tipsHtml+'</ul></div>';
-  const loc = '<div class="section"><h3>Location</h3><p style="font-family:monospace;color:#666;">'
-    + s.lat.toFixed(6)+', '+s.lng.toFixed(6)+'</p></div>';
-
-  document.getElementById('detail-content').innerHTML = hero + meta + about + tips + loc;
-}
-
-function openDetail(s){
-  justOpened = true; setTimeout(()=>justOpened=false, 0);
-  setMarkerSelected(s.id);
-  renderDetail(s);
-  detail.classList.add('open');
-  renderList();
-}
-
-function closeDetail(){ detail.classList.remove('open'); }
-document.getElementById('close-detail').addEventListener('click', closeDetail);
-document.addEventListener('click', (e)=>{
-  if(!detail.classList.contains('open')) return;
-  if(justOpened) return;
-  if(detail.contains(e.target)) return;
-  closeDetail();
+  const m = L.marker([s.lat,s.lng],{icon}).addTo(map);
+  m.on("click",()=>{
+    bounce(m,s);
+    select(s.id);
+  });
+  markers.set(s.id,m);
 });
 
-function applyFilter(){
-  STOPS.forEach(s=>{
-    if(s.cat==='home') return;
-    const show = (activeFilter==='all') || (s.cat===activeFilter);
-    const m = markers.get(s.id);
-    if(!m) return;
-    if(show){ if(!map.hasLayer(m)) m.addTo(map); }
-    else { if(map.hasLayer(m)) map.removeLayer(m); }
-  });
-  renderList();
-}
-
-function renderFilters(){
-  const host = document.getElementById('filters');
-  const defs = [
-    {key:'all', label:'All'},
-    {key:'beach', label:'🏖 Beach'},
-    {key:'nature', label:'🌿 Nature'},
-    {key:'bio', label:'✨ Bio'},
-    {key:'history', label:'🏰 History'}
-  ];
-  host.innerHTML='';
-  defs.forEach(d=>{
-    const b=document.createElement('button');
-    b.className='filter-btn'+(activeFilter===d.key?' on':'');
-    b.textContent=d.label;
-    b.addEventListener('click', ()=>{
-      activeFilter=d.key;
-      host.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('on'));
-      b.classList.add('on');
-      applyFilter();
-    });
-    host.appendChild(b);
-  });
-}
+/* ---------- LIST ---------- */
+const list = document.getElementById("list");
 
 function renderList(){
-  const listEl = document.getElementById('list');
-  listEl.innerHTML='';
-  const filtered = STOPS.filter(s=>{
-    if(s.cat==='home') return true;
-    return activeFilter==='all' || s.cat===activeFilter;
-  });
-
-  filtered.forEach(s=>{
-    const item=document.createElement('div');
-    item.className='item'+(selectedId===s.id?' selected':'');
-    item.innerHTML = `
-      <div class="num-badge num-${s.cat}">${s.id}</div>
-      <div style="flex:1">
+  list.innerHTML="";
+  STOPS.forEach(s=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.innerHTML=`
+      <div class="num ${s.cat}">${s.id}</div>
+      <div>
         <div class="name">${CAT_EMOJI[s.cat]} ${s.name}</div>
-        <div class="tag">${s.tagline}</div>
-        <span class="stop-pill p-${s.cat}">${CAT_LABEL[s.cat]}</span>
-      </div>
-    `;
-
-    item.addEventListener('click', ()=>{
-      map.flyTo([s.lat,s.lng], s.cat==='home'?15:13, {animate:true, duration:0.8});
-      if(s.cat==='home') homeMarker.openPopup(); else openDetail(s);
-    });
-
-    listEl.appendChild(item);
+        <div class="tag">${s.tag}</div>
+      </div>`;
+    d.onclick=()=>{
+      map.flyTo([s.lat,s.lng],13);
+      bounce(markers.get(s.id),s);
+      select(s.id);
+    };
+    list.appendChild(d);
   });
 }
-
-// Create markers
-STOPS.forEach(s=>{
-  if(s.cat==='home') return;
-  const icon = makeStopIcon(s, {selected:false, bounce:false});
-  const m=L.marker([s.lat,s.lng], {icon}).addTo(map);
-  m.bindPopup('<b>'+CAT_EMOJI[s.cat]+' '+s.name+'</b><br/>'+s.tagline);
-  m.on('click', ()=>openDetail(s));
-  markers.set(s.id, m);
-});
-
-// Fit bounds
-const bounds = L.latLngBounds(STOPS.map(s => [s.lat, s.lng]));
-map.fitBounds(bounds.pad(0.10));
-
-renderFilters();
 renderList();
 
-document.getElementById('gotoHome').addEventListener('click', ()=>{
-  map.flyTo([HOME_BASE.lat, HOME_BASE.lng], 15, {animate:true, duration:0.9});
-  homeMarker.openPopup();
-});
+/* ---------- HELPERS ---------- */
+function bounce(marker,stop){
+  marker.setIcon(L.divIcon({
+    className:"",
+    html:`<div class="stop-marker m-${stop.cat} bounce">${stop.id}</div>`,
+    iconSize:[36,36],
+    iconAnchor:[18,18]
+  }));
+  setTimeout(()=>{
+    marker.setIcon(L.divIcon({
+      className:"",
+      html:`<div class="stop-marker m-${stop.cat}">${stop.id}</div>`,
+      iconSize:[36,36],
+      iconAnchor:[18,18]
+    }));
+  },650);
+}
+
+function select(id){
+  document.querySelectorAll(".item").forEach((el,i)=>{
+    el.classList.toggle("selected",STOPS[i].id===id);
+  });
+}
 </script>
 </body>
 </html>
