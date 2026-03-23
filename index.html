@@ -1,140 +1,93 @@
-<!doctype html> 
-<html lang="en"> 
-<head> 
- <meta charset="utf-8"/> 
- <meta name="viewport" content="width=device-width,initial-scale=1"/> 
- <title>Vieques — Island Tour (Home Base Highlighted)</title> 
- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> 
- <style> 
- :root { --sun:#FFD93D; --coral:#FF6B6B; --ocean:#0096C7; --ink:#102028; --muted:#5c7680; } 
- *{box-sizing:border-box} html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;} 
- #wrap{display:grid;grid-template-columns:340px 1fr;height:100%;} 
- #sidebar{background:rgba(255,255,255,.98);border-right:4px solid var(--sun);overflow:auto;} 
- #map{height:100%;} 
- header{padding:14px 16px;border-bottom:1px solid #eee;} 
- header h1{margin:0;font-size:18px;} 
- header p{margin:6px 0 0;color:var(--muted);font-weight:600;font-size:12px;} 
- .home-card{margin:12px 12px 8px;padding:12px;border-radius:14px;border:3px solid var(--sun);background:linear-gradient(135deg,rgba(155,89,182,.12),rgba(255,217,61,.18));} 
- .home-title{display:flex;gap:10px;align-items:center;font-weight:900;} 
- .home-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#9B59B6;color:#fff;font-size:18px;box-shadow:0 8px 18px rgba(0,0,0,.22);} 
- .home-coord{margin-top:8px;font-size:12px;color:var(--muted);font-weight:700;} 
- .btn{display:inline-flex;gap:8px;align-items:center;margin-top:10px;padding:10px 12px;border:none;border-radius:999px;background:#9B59B6;color:white;font-weight:900;cursor:pointer;box-shadow:0 6px 0 #6d3a85;} 
- .btn:active{transform:translateY(2px);box-shadow:0 4px 0 #6d3a85;} 
- .list{padding:8px 12px 14px;} 
- .item{padding:10px 10px;border-radius:12px;border:1px solid #eee;margin:8px 0;cursor:pointer;} 
- .item:hover{background:#f7fbff;} 
- .name{font-weight:900;color:var(--ink);font-size:13px;} 
- .tag{font-size:12px;color:var(--muted);font-weight:700;margin-top:3px;} 
- /* EXTREMELY OBVIOUS HOME MARKER */ 
- .home-pin{position:relative;width:64px;height:64px;border-radius:50%;background:#9B59B6;border:6px solid #fff;box-shadow:0 14px 30px rgba(0,0,0,.38);display:flex;align-items:center;justify-content:center;} 
- .home-pin span{font-size:30px;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));} 
- .home-pin::before{content:'';position:absolute;inset:-18px;border-radius:50%;border:6px solid rgba(255,217,61,.95);box-shadow:0 0 0 10px rgba(255,217,61,.25);animation:pulse 1.2s ease-out infinite;} 
- @keyframes pulse{0%{transform:scale(.55);opacity:1} 100%{transform:scale(1.35);opacity:0}} 
- .home-label{background:#fff;color:#7D3C98;border:4px solid #FFD93D;border-radius:999px;padding:8px 12px;font-weight:1000;font-size:16px;box-shadow:0 14px 30px rgba(0,0,0,.28);white-space:nowrap;} 
- .leaflet-popup-content-wrapper{border-radius:14px;} 
-
- /* RIGHT DRAWER */
- #detail{position:fixed;top:0;right:0;width:360px;height:100%;background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .35s ease;z-index:999;overflow:auto}
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8"/>
+ <meta name="viewport" content="width=device-width,initial-scale=1"/>
+ <title>Vieques — Island Tour (EXTREME + Full Details)</title>
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+ <style>
+ :root{--sun:#FFD93D;--coral:#FF6B6B;--ocean:#0096C7;--teal:#00B4D8;--lime:#06D6A0;--ink:#102028;--muted:#5c7680}
+ *{box-sizing:border-box}html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+ #wrap{display:grid;grid-template-columns:340px 1fr;height:100%}
+ #sidebar{background:rgba(255,255,255,.98);border-right:4px solid var(--sun);overflow:auto}
+ #map{height:100%}
+ header{padding:14px 16px;border-bottom:1px solid #eee}
+ header h1{margin:0;font-size:18px}
+ header p{margin:6px 0 0;color:var(--muted);font-weight:600;font-size:12px}
+ .home-card{margin:12px;padding:12px;border-radius:14px;border:3px solid var(--sun);background:linear-gradient(135deg,rgba(155,89,182,.12),rgba(255,217,61,.18))}
+ .list{padding:8px 12px 14px}
+ .item{padding:10px;border-radius:12px;border:1px solid #eee;margin:8px 0;cursor:pointer}
+ .item:hover{background:#f7fbff}
+ .name{font-weight:900;font-size:13px}
+ .tag{font-size:12px;color:var(--muted);font-weight:700}
+ /* drawer */
+ #detail{position:fixed;top:0;right:0;width:380px;height:100%;background:#fff;transform:translateX(100%);transition:.35s ease;z-index:999;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.25)}
  #detail.open{transform:translateX(0)}
- #detail header{padding:16px;border-bottom:1px solid #eee;font-weight:900}
- #close-detail{position:absolute;top:14px;right:14px;border:none;background:var(--coral);color:#fff;width:32px;height:32px;border-radius:50%;font-weight:900;cursor:pointer}
- #detail .content{padding:16px;font-size:14px;line-height:1.5}
- </style> 
-</head> 
-<body> 
- <div id="wrap"> 
- <div id="sidebar"> 
- <header> 
- <h1>Vieques — Island Tour</h1> 
- <p>Home Base is highlighted with a huge pulsing marker + label.</p> 
- </header> 
- <div class="home-card"> 
- <div class="home-title"><div class="home-badge">🏠</div><div> 
- <div style="font-size:14px;">HOME BASE</div> 
- <div style="font-size:12px;color:var(--muted);font-weight:800;">June 1–6, 2026</div> 
- </div></div> 
- <div class="home-coord">18.157917, -65.435639</div> 
- <button class="btn" id="gotoHome">📍 Zoom to Home Base</button> 
- </div> 
- <div class="list" id="list"></div> 
- </div> 
- <div id="map"></div> 
- </div> 
-
- <div id="detail">
-  <button id="close-detail">✕</button>
-  <header id="detail-title">Stop</header>
-  <div class="content" id="detail-content"></div>
+ #close-detail{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:var(--coral);color:#fff;font-weight:900;cursor:pointer}
+ .detail-hero{padding:18px 16px;border-bottom:3px dashed #eee}
+ .detail-cat{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+ .detail-name{font-size:22px;font-weight:900;margin:6px 0}
+ .detail-tagline{font-size:14px;color:#555;font-style:italic}
+ .meta{display:grid;grid-template-columns:repeat(3,1fr);margin:12px 16px;border:2px solid #f0f0f0;border-radius:12px;overflow:hidden}
+ .meta div{padding:8px;font-size:12px;font-weight:800;border-right:1px solid #eee}
+ .meta div:last-child{border-right:none}
+ .section{padding:14px 16px}
+ .section h3{margin:0 0 6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+ .section p,.section li{font-size:14px;line-height:1.6}
+ .section ul{list-style:none;padding-left:0}
+ .section li{padding-left:18px;position:relative}
+ .section li::before{content:'🌴';position:absolute;left:0}
+ </style>
+</head>
+<body>
+<div id="wrap">
+ <div id="sidebar">
+  <header><h1>Vieques — Island Tour</h1><p>EXTREME map + full stop details</p></header>
+  <div class="home-card"><strong>🏠 Home Base</strong><br/>June 1–6, 2026</div>
+  <div class="list" id="list"></div>
  </div>
+ <div id="map"></div>
+</div>
 
- <script> 
- const HOME_BASE = { id: 19, name: 'Home Base', cat: 'home', lat: 18.157917, lng: -65.435639, tagline: 'Home base — June 1 to 6, 2026' }; 
- const STOPS = [ 
- {id:1, name:'Sun Bay (Sombé)', cat:'beach', lat:18.1057, lng:-65.438, tagline:"The island's most beloved public beach"}, 
- {id:2, name:'Media Luna Beach', cat:'beach', lat:18.1048, lng:-65.4313, tagline:'Secluded crescent with reef snorkeling'}, 
- {id:3, name:'Navio Beach', cat:'beach', lat:18.1038, lng:-65.4246, tagline:'Wild & remote Atlantic-facing beach'}, 
- {id:4, name:'Mosquito Pier', cat:'nature', lat:18.14, lng:-65.47, tagline:'Snorkeling & historic Navy-era pier'}, 
- {id:5, name:'Bioluminescent Bay', cat:'bio', lat:18.1258, lng:-65.4648, tagline:'The brightest bio bay in the world ✨'}, 
- {id:6, name:'El Fortín Conde de Mirasol', cat:'history', lat:18.1516, lng:-65.4434, tagline:'Last Spanish fort built in the Americas'}, 
- {id:7, name:'Isabel Segunda', cat:'history', lat:18.1527, lng:-65.444, tagline:"Vieques' colorful main town"}, 
- {id:8, name:'Esperanza Malecón', cat:'history', lat:18.0946, lng:-65.4714, tagline:'Charming southern waterfront village'}, 
- {id:9, name:'Vieques Wildlife Refuge', cat:'nature', lat:18.11, lng:-65.39, tagline:'3,100 acres of wild eastern lands'}, 
- {id:10, name:'Red Beach (Caracas)', cat:'beach', lat:18.11, lng:-65.42, tagline:'Iconic calm bay with vivid blue water'}, 
- {id:11, name:'Blue Beach (La Chiva)', cat:'beach', lat:18.105, lng:-65.405, tagline:'Seven coves of crystalline water'}, 
- {id:12, name:'Green Beach', cat:'beach', lat:18.132, lng:-65.519, tagline:'Remote western tip with channel views'}, 
- {id:13, name:'Playa Negra (Black Sand)', cat:'beach', lat:18.149, lng:-65.455, tagline:'Unusual volcanic black sand beach'}, 
- {id:14, name:'Punta Mulas Lighthouse', cat:'history', lat:18.1562, lng:-65.4442, tagline:"Historic 1896 lighthouse at land's end"}, 
- {id:15, name:'La Laguna (Kiani Lagoon)', cat:'nature', lat:18.103, lng:-65.472, tagline:'Mangrove lagoon kayaking & birding'}, 
- {id:16, name:'Cerro Ventana', cat:'nature', lat:18.135, lng:-65.46, tagline:'Natural rock window with panoramic views'}, 
- {id:17, name:'Taíno Cultural Site', cat:'history', lat:18.12, lng:-65.49, tagline:"Evidence of the island's first inhabitants"}, 
- {id:18, name:'Playa La Plata', cat:'beach', lat:18.108, lng:-65.46, tagline:"The island's best-kept secret beach"}, 
- HOME_BASE 
- ]; 
- const colors = { beach:'#0096C7', nature:'#1A7A4A', bio:'#06D6A0', history:'#E07B54', home:'#9B59B6' }; 
- const map = L.map('map', { center: [HOME_BASE.lat, HOME_BASE.lng], zoom: 13, zoomControl: false }); 
- L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Tiles © Esri' }).addTo(map); 
- L.control.zoom({ position: 'bottomright' }).addTo(map); 
- L.circle([HOME_BASE.lat, HOME_BASE.lng], { radius: 1000, color:'#FFD93D', weight:6, opacity:1, fillColor:'#9B59B6', fillOpacity:0.12 }).addTo(map); 
- const homeIcon = L.divIcon({ className:'', html:'<div class="home-pin"><span>🏠</span></div>', iconSize:[64,64], iconAnchor:[32,32], popupAnchor:[0,-36] }); 
- const homeMarker = L.marker([HOME_BASE.lat, HOME_BASE.lng], { icon: homeIcon }).addTo(map); 
- homeMarker.bindPopup('<b>🏠 Home Base</b><br/>' + HOME_BASE.lat.toFixed(6) + ', ' + HOME_BASE.lng.toFixed(6)).openPopup(); 
- L.marker([HOME_BASE.lat, HOME_BASE.lng], { interactive:false, icon: L.divIcon({ className:'', html:'<div class="home-label">🏠 HOME BASE</div>', iconSize:[180,44], iconAnchor:[90,66] }) }).addTo(map); 
+<div id="detail">
+ <button id="close-detail">✕</button>
+ <div id="detail-content"></div>
+</div>
 
- let justOpened=false;
- const detail=document.getElementById('detail');
- const dTitle=document.getElementById('detail-title');
- const dContent=document.getElementById('detail-content');
- function openDetail(s){
-  justOpened=true; setTimeout(()=>justOpened=false,0);
-  dTitle.textContent = s.name;
-  dContent.innerHTML = `<p><strong>${s.tagline}</strong></p><p>${s.lat.toFixed(6)}, ${s.lng.toFixed(6)}</p>`;
-  detail.classList.add('open');
- }
- function closeDetail(){ detail.classList.remove('open'); }
- document.getElementById('close-detail').onclick = closeDetail;
- document.addEventListener('click', e => { if(!detail.classList.contains('open')) return; if(justOpened) return; if(detail.contains(e.target)) return; closeDetail(); });
+<script>
+const CAT_COLOR={beach:'#0096C7',nature:'#1A7A4A',bio:'#06D6A0',history:'#E07B54',home:'#9B59B6'};
+const HOME_BASE={id:19,name:'Home Base',cat:'home',lat:18.157917,lng:-65.435639,tagline:'Home base — June 1 to 6, 2026',desc:'Your home for the week!',tips:['Check‑in June 1','Check‑out June 6'],hours:'Jun 1–6',duration:'5 nights',best:'Always'};
+const STOPS = 
+[
+{id:1,name:'Sun Bay (Sombé)',cat:'beach',lat:18.1057,lng:-65.4380,tagline:'The island's most beloved public beach',desc:'Sun Bay is the crown jewel...',tips:['Arrive early','Sea grape shade','Walk to Media Luna'],hours:'7am – 6pm',duration:'2–3 hrs',best:'Morning'},
+{id:2,name:'Media Luna Beach',cat:'beach',lat:18.1048,lng:-65.4313,tagline:'Secluded crescent with reef snorkeling',desc:'A short walk east...',tips:['Bring snorkel','Quiet weekdays','Foot access only'],hours:'Dawn – Dusk',duration:'1–2 hrs',best:'Morning'}
+]
+;
 
- STOPS.filter(s => s.cat !== 'home').forEach(s => { 
-  const icon = L.divIcon({ className:'', html:`<div style="width:34px;height:34px;border-radius:50%;background:${colors[s.cat]};color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.25);">${s.id}</div>`, iconSize:[34,34], iconAnchor:[17,17], popupAnchor:[0,-20] }); 
-  const m = L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(`<b>${s.name}</b><br/>${s.tagline}`);
-  m.on('click', ()=>openDetail(s));
- }); 
- const bounds = L.latLngBounds(STOPS.map(s => [s.lat, s.lng])); 
- map.fitBounds(bounds.pad(0.10)); 
- const list = document.getElementById('list'); 
- list.innerHTML = STOPS.map(s => ` 
- <div class="item" data-id="${s.id}"> 
- <div class="name">${s.cat==='home' ? '🏠 ' : ''}${s.name}</div> 
- <div class="tag">${s.tagline}</div> 
- </div>`).join(''); 
- list.addEventListener('click', (e) => { 
-  const card = e.target.closest('.item'); if(!card) return; 
-  const id = Number(card.dataset.id); const s = STOPS.find(x => x.id === id); 
-  map.flyTo([s.lat, s.lng], s.cat==='home' ? 15 : 13, { animate:true, duration: 0.8 }); 
-  if(s.cat==='home') homeMarker.openPopup(); else openDetail(s);
- }); 
- document.getElementById('gotoHome').addEventListener('click', () => { map.flyTo([HOME_BASE.lat, HOME_BASE.lng], 15, { animate:true, duration: 0.9 }); homeMarker.openPopup(); }); 
- </script> 
-</body> 
+const map=L.map('map',{center:[HOME_BASE.lat,HOME_BASE.lng],zoom:13});
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}).addTo(map);
+let justOpened=false;
+const detail=document.getElementById('detail');
+function openDetail(s){justOpened=true;setTimeout(()=>justOpened=false,0);
+document.getElementById('detail-content').innerHTML=`
+ <div class='detail-hero'>
+  <div class='detail-cat'>${s.cat}</div>
+  <div class='detail-name'>${s.name}</div>
+  <div class='detail-tagline'>${s.tagline}</div>
+ </div>
+ <div class='meta'>
+  <div>${s.duration}</div><div>${s.best}</div><div>${s.hours}</div>
+ </div>
+ <div class='section'><h3>About</h3><p>${s.desc}</p></div>
+ <div class='section'><h3>Local Tips</h3><ul>${s.tips.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
+detail.classList.add('open')}
+function closeDetail(){detail.classList.remove('open')}
+document.getElementById('close-detail').onclick=closeDetail;
+document.addEventListener('click',e=>{if(!detail.classList.contains('open'))return;if(justOpened)return;if(detail.contains(e.target))return;closeDetail()});
+STOPS.forEach(s=>{const m=L.marker([s.lat,s.lng]).addTo(map);m.on('click',()=>openDetail(s))});
+const list=document.getElementById('list');
+list.innerHTML=STOPS.map(s=>`<div class='item' onclick='openDetail(STOPS.find(x=>x.id===${s.id}))'><div class='name'>${s.name}</div><div class='tag'>${s.tagline}</div></div>`).join('');
+</script>
+</body>
 </html>
