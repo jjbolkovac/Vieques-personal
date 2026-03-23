@@ -1,97 +1,113 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Vieques — Tour Stops (Stable + Fun)</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vieques — Island Tour</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <style>
-    :root{--sun:#FFD93D;--coral:#FF6B6B;--ink:#102028;--muted:#5c7680;}
-    *{box-sizing:border-box} html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+<style>
+:root{--sun:#FFD93D;--coral:#FF6B6B;--ink:#102028;--muted:#5c7680}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto}
 
-    #wrap{display:grid;grid-template-columns:340px 1fr;height:100%;}
-    #sidebar{background:#fff;border-right:4px solid var(--sun);overflow:auto;}
-    #map{height:100%;}
+#wrap{display:grid;grid-template-columns:340px 1fr;height:100%}
+#sidebar{background:#fff;border-right:4px solid var(--sun);overflow:auto}
+#map{height:100%}
 
-    header{padding:14px 16px;border-bottom:1px solid #eee;}
-    header h1{margin:0;font-size:18px;}
-    header p{margin:6px 0 0;color:var(--muted);font-weight:700;font-size:12px;}
+header{padding:14px 16px;border-bottom:1px solid #eee}
+header h1{margin:0;font-size:18px}
+header p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:700}
 
-    .filter-row{display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid #eee;background:#fff;position:sticky;top:0;z-index:5;}
-    .filter-btn{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;
-      border:2px solid #e6e6e6;background:#fff;color:#567;cursor:pointer}
-    .filter-btn.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.list{padding:10px}
+.item{display:flex;gap:10px;border:1px solid #eee;border-radius:12px;padding:10px;margin-bottom:8px;cursor:pointer}
+.item:hover{background:#f7fbff}
+.item.selected{outline:3px solid rgba(0,0,0,.08)}
 
-    .list{padding:10px;}
-    .item{display:flex;gap:10px;border:1px solid #eee;border-radius:12px;padding:10px;margin-bottom:8px;cursor:pointer;}
-    .item:hover{background:#f7fbff;}
-    .item.selected{outline:3px solid rgba(0,0,0,.08);background:#f7fbff;}
+.num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+.beach{background:#0096C7}
+.nature{background:#1A7A4A}
+.bio{background:#06D6A0}
+.history{background:#E07B54}
+.home{background:#9B59B6}
 
-    .num{width:32px;height:32px;min-width:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.18)}
-    .num.beach{background:#0096C7} .num.nature{background:#1A7A4A} .num.bio{background:#06D6A0} .num.history{background:#E07B54} .num.home{background:#9B59B6}
+.name{font-weight:900;font-size:13px}
+.tag{font-size:12px;color:var(--muted);font-weight:700}
 
-    .name{font-weight:900;font-size:13px;color:var(--ink)}
-    .tag{font-size:12px;color:var(--muted);font-weight:700;margin-top:3px}
-    .pill{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-    .p-beach{background:#DBEEFF;color:#0077B6} .p-nature{background:#D8F5E3;color:#1A7A4A} .p-bio{background:#C8FFF0;color:#007A5E} .p-history{background:#FFE8D6;color:#7A3E0A} .p-home{background:#F5EEF8;color:#7D3C98}
+/* MAP MARKERS */
+.mk{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#fff;border:3px solid #fff;
+  box-shadow:0 6px 16px rgba(0,0,0,.25)
+}
+.mk.beach{background:#0096C7}
+.mk.nature{background:#1A7A4A}
+.mk.bio{background:#06D6A0}
+.mk.history{background:#E07B54}
+.mk.home{background:#9B59B6}
+.mk.sel{outline:4px solid rgba(255,217,61,.95)}
 
-    /* Map numbered markers */
-    .mk{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.25)}
-    .mk.beach{background:#0096C7} .mk.nature{background:#1A7A4A} .mk.bio{background:#06D6A0} .mk.history{background:#E07B54} .mk.home{background:#9B59B6}
-    .mk.sel{outline:4px solid rgba(255,217,61,.95);outline-offset:2px}
-    @keyframes bounce{0%{transform:translateY(0)}30%{transform:translateY(-16px)}50%{transform:translateY(0)}70%{transform:translateY(-8px)}100%{transform:translateY(0)}}
-    .mk.bounce{animation:bounce .6s ease}
+@keyframes bounce{
+  0%{transform:translateY(0)}
+  30%{transform:translateY(-16px)}
+  50%{transform:translateY(0)}
+  70%{transform:translateY(-8px)}
+  100%{transform:translateY(0)}
+}
+.mk.bounce{animation:bounce .6s ease}
 
-    /* Drawer */
-    #detail{position:fixed;top:0;right:0;width:390px;height:100%;background:#fff;transform:translateX(100%);
-      transition:transform .35s ease;z-index:999;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.25)}
-    #detail.open{transform:translateX(0)}
-    #close-detail{position:absolute;top:14px;right:14px;border:none;background:var(--coral);color:#fff;width:34px;height:34px;border-radius:50%;font-weight:900;cursor:pointer}
+/* DRAWER */
+#detail{
+  position:fixed;top:0;right:0;width:380px;height:100%;
+  background:#fff;transform:translateX(100%);
+  transition:transform .35s ease;
+  box-shadow:-10px 0 30px rgba(0,0,0,.25);
+  z-index:999;overflow:auto
+}
+#detail.open{transform:translateX(0)}
+#close-detail{
+  position:absolute;top:12px;right:12px;
+  background:var(--coral);color:#fff;border:none;
+  width:34px;height:34px;border-radius:50%;
+  font-weight:900;cursor:pointer
+}
 
-    .hero{padding:18px 16px;border-bottom:3px dashed #eee;position:relative;}
-    .hero.accent-beach{border-left:6px solid #0096C7} .hero.accent-nature{border-left:6px solid #1A7A4A} .hero.accent-bio{border-left:6px solid #06D6A0} .hero.accent-history{border-left:6px solid #E07B54} .hero.accent-home{border-left:6px solid #9B59B6}
-    .hero-top{display:flex;gap:10px;align-items:flex-start}
-    .hero-num{width:42px;height:42px;min-width:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-weight:900;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.18)}
-    .hero-num.beach{background:#0096C7} .hero-num.nature{background:#1A7A4A} .hero-num.bio{background:#06D6A0} .hero-num.history{background:#E07B54} .hero-num.home{background:#9B59B6}
-    .hero-cat{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-    .hero-name{font-size:22px;font-weight:900;margin:4px 0;color:var(--ink)}
-    .hero-tag{font-size:14px;color:#555;font-style:italic}
-    .drive{display:inline-flex;gap:6px;align-items:center;margin-top:8px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.06);font-size:12px;font-weight:800;color:#444}
+.hero{padding:18px;border-bottom:3px dashed #eee}
+.hero-top{display:flex;gap:10px}
+.hero-num{
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#fff;border:3px solid #fff
+}
+.hero-num.beach{background:#0096C7}
+.hero-num.nature{background:#1A7A4A}
+.hero-num.bio{background:#06D6A0}
+.hero-num.history{background:#E07B54}
+.hero-num.home{background:#9B59B6}
 
-    .meta{display:grid;grid-template-columns:repeat(3,1fr);margin:12px 16px;border:2px solid #f0f0f0;border-radius:12px;overflow:hidden}
-    .cell{padding:8px;border-right:1px solid #eee} .cell:last-child{border-right:none}
-    .lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;font-weight:900}
-    .val{font-size:12px;color:#333;font-weight:800}
+.hero-name{font-size:22px;font-weight:900}
+.hero-tag{font-size:14px;color:#555;font-style:italic}
 
-    .section{padding:14px 16px;border-bottom:1px dashed #eee}
-    .section h3{margin:0 0 6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-    .section p,.section li{font-size:14px;line-height:1.65}
-    .section ul{list-style:none;padding-left:0;margin:0} .section li{padding-left:18px;position:relative;margin:6px 0} .section li::before{content:'🌴';position:absolute;left:0}
-
-    #map-fallback{display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:24px;background:#fff;color:#333}
-    #map-fallback strong{display:block;font-size:16px;margin-bottom:6px}
-  </style>
+.section{padding:14px;border-bottom:1px dashed #eee}
+.section h3{font-size:11px;text-transform:uppercase;color:var(--muted)}
+.section p{font-size:14px;line-height:1.6}
+</style>
 </head>
+
 <body>
 <div id="wrap">
   <div id="sidebar">
     <header>
       <h1>Vieques — Island Tour</h1>
-      <p>Filters • bounce • synced numbers (map/list/drawer)</p>
+      <p>All stops · numbered · interactive</p>
     </header>
-    <div class="filter-row" id="filters"></div>
     <div class="list" id="list"></div>
   </div>
-  <div style="position:relative">
-    <div id="map"></div>
-    <div id="map-fallback"><div><strong>Map libraries blocked</strong>Leaflet or map tiles didn’t load. This usually happens when a network blocks CDN/tiles. The list will still work.</div></div>
-  </div>
+  <div id="map"></div>
 </div>
 
 <div id="detail">
@@ -100,200 +116,88 @@
 </div>
 
 <script>
-const STOPS = [{"id": 1, "name": "Sun Bay (Sombé)", "cat": "beach", "lat": 18.1057, "lng": -65.438, "tagline": "The island's most beloved public beach", "desc": "Sun Bay is the crown jewel of Vieques' public beaches — a sweeping mile-long crescent of golden sand backed by sea grape trees. The calm, shallow turquoise waters make it ideal for swimming and snorkeling.", "tips": ["Arrive early on weekends to claim a spot", "Shade under sea grape trees to the east", "Walk east toward Media Luna for quieter sands"], "hours": "7am – 6pm", "duration": "2–3 hrs", "best": "Morning"}, {"id": 2, "name": "Media Luna Beach", "cat": "beach", "lat": 18.1048, "lng": -65.4313, "tagline": "Secluded crescent with reef snorkeling", "desc": "A short walk east from Sun Bay, Media Luna offers quiet escape with excellent snorkeling off the rocky edges. The reef shelters colorful fish and the occasional sea turtle.", "tips": ["Bring snorkel gear — reef is right off the beach", "Often nearly empty on weekdays", "Only accessible on foot from Sun Bay"], "hours": "Dawn – Dusk", "duration": "1–2 hrs", "best": "Morning"}, {"id": 3, "name": "Navio Beach", "cat": "beach", "lat": 18.1038, "lng": -65.4246, "tagline": "Wild & remote Atlantic-facing beach", "desc": "One of the most remote beaches on the south coast. Navio requires a short hike through brush — the reward is a wild, undeveloped stretch with dramatic waves and virtually no crowds.", "tips": ["4WD recommended for the road", "Bring everything — zero facilities", "Not ideal for children due to surf"], "hours": "Dawn – Dusk", "duration": "1–2 hrs", "best": "Afternoon"}, {"id": 4, "name": "Mosquito Pier", "cat": "nature", "lat": 18.14, "lng": -65.47, "tagline": "Snorkeling & historic Navy-era pier", "desc": "This decommissioned Navy pier is a snorkeling hotspot. The pilings are encrusted with coral and sponges, attracting schools of fish, rays, and nurse sharks.", "tips": ["Morning snorkeling is best for visibility", "Watch for rays in the shallow flats", "Spectacular sunset photography spot"], "hours": "Dawn – Dusk", "duration": "1–2 hrs", "best": "Morning or Sunset"}, {"id": 5, "name": "Bioluminescent Bay", "cat": "bio", "lat": 18.1258, "lng": -65.4648, "tagline": "The brightest bio bay in the world ✨", "desc": "Mosquito Bay holds the Guinness World Record as the brightest bioluminescent bay on Earth. Millions of dinoflagellates light up the water with an ethereal blue-green glow when disturbed.", "tips": ["No-moon nights are the brightest", "Kayak tours feel most magical", "Book tours well in advance", "No sunscreen before entering the water"], "hours": "Tours from 7pm", "duration": "2 hrs", "best": "New moon nights"}, {"id": 6, "name": "El Fortín Conde de Mirasol", "cat": "history", "lat": 18.1516, "lng": -65.4434, "tagline": "Last Spanish fort built in the Americas", "desc": "Built 1845–1865, El Fortín is the last military fortification built by Spain in the New World. Today it houses the Vieques Art & History Museum with exhibits on Taíno culture and the Navy struggle.", "tips": ["Open Tue–Sun, small admission fee", "Best panoramic views from the ramparts", "The Navy-era exhibit is particularly moving"], "hours": "Tue–Sun 10am–4pm", "duration": "1–1.5 hrs", "best": "Midday"}, {"id": 7, "name": "Isabel Segunda", "cat": "history", "lat": 18.1527, "lng": -65.444, "tagline": "Vieques' colorful main town", "desc": "The island's largest town is a colorful grid of pastel buildings, local restaurants, and the ferry terminal. The main plaza is a hub of island life, surrounded by the church and old government buildings.", "tips": ["Sunday plaza market is worth catching", "Most car and golf cart rentals are here", "Ask about the mural project around town"], "hours": "Always open", "duration": "1–2 hrs", "best": "Morning or Evening"}, {"id": 8, "name": "Esperanza Malecón", "cat": "history", "lat": 18.0946, "lng": -65.4714, "tagline": "Charming southern waterfront village", "desc": "Esperanza is Vieques' southern village — a relaxed strip of guesthouses, restaurants, and bars along a waterfront promenade overlooking a calm bay.", "tips": ["Sunset from the malecón is stunning", "Most bio bay tour operators are here", "Several excellent restaurants for fresh seafood"], "hours": "Always open", "duration": "1–2 hrs", "best": "Sunset & Evening"}, {"id": 9, "name": "Vieques Wildlife Refuge", "cat": "nature", "lat": 18.11, "lng": -65.39, "tagline": "3,100 acres of wild eastern lands", "desc": "The US Fish & Wildlife Service manages the eastern two-thirds of Vieques as a protected refuge — former Navy bombing range — with pristine beaches, dry forest, mangroves, and 200+ bird species.", "tips": ["4WD required for most trails", "Bird watching excellent October–March", "Pick up a refuge map at the entrance"], "hours": "Sunrise to sunset", "duration": "Half day", "best": "Early morning"}, {"id": 10, "name": "Red Beach (Caracas)", "cat": "beach", "lat": 18.11, "lng": -65.42, "tagline": "Iconic calm bay with vivid blue water", "desc": "One of the most photographed beaches on Vieques, Red Beach sits inside a sheltered cove in the Wildlife Refuge. The water is impossibly clear — ideal for snorkeling and paddleboarding.", "tips": ["Some of the best snorkeling on the island", "Road requires 4WD", "No facilities — bring water and food"], "hours": "Dawn – Dusk (Refuge)", "duration": "2–3 hrs", "best": "Morning"}, {"id": 11, "name": "Blue Beach (La Chiva)", "cat": "beach", "lat": 18.105, "lng": -65.405, "tagline": "Seven coves of crystalline water", "desc": "Blue Beach is a series of seven small coves separated by rocky headlands inside the Wildlife Refuge. Locals consider it the most beautiful beach on the island — water an electric shade of cobalt and turquoise.", "tips": ["Explore multiple coves", "Bring snorkel gear and plenty of water", "Gets windy in the afternoon — go in the morning"], "hours": "Dawn – Dusk (Refuge)", "duration": "3–4 hrs", "best": "Morning"}, {"id": 12, "name": "Green Beach", "cat": "beach", "lat": 18.132, "lng": -65.519, "tagline": "Remote western tip with channel views", "desc": "At the far western end of the island, Green Beach faces the channel between Vieques and Puerto Rico. On a clear day you can see El Yunque rainforest and Culebra island from the shore.", "tips": ["The sunset here is extraordinary", "Calm shallow water great for swimming", "Very isolated — solitude is the whole point"], "hours": "Dawn – Dusk", "duration": "2–3 hrs", "best": "Late afternoon"}, {"id": 13, "name": "Playa Negra (Black Sand)", "cat": "beach", "lat": 18.149, "lng": -65.455, "tagline": "Unusual volcanic black sand beach", "desc": "One of the few black sand beaches in Puerto Rico, Playa Negra sits on the north coast near Isabel Segunda. The dark mineral sand contrasts strikingly with the turquoise water.", "tips": ["One of the most unique beaches on the island", "Great for dramatic photos", "Locals often fish from the shore here"], "hours": "Always open", "duration": "1 hr", "best": "Any time"}, {"id": 14, "name": "Punta Mulas Lighthouse", "cat": "history", "lat": 18.1562, "lng": -65.4442, "tagline": "Historic 1896 lighthouse at land's end", "desc": "The Punta Mulas lighthouse, built in 1896, guards the northern shore from a coral bluff. The elegant Spanish colonial structure sits surrounded by cacti and windswept scrub with beautiful channel views.", "tips": ["Located near the ferry terminal", "Grounds open but structure may be closed", "Gorgeous golden hour photography spot"], "hours": "Grounds always open", "duration": "30 min", "best": "Sunset"}, {"id": 15, "name": "La Laguna (Kiani Lagoon)", "cat": "nature", "lat": 18.103, "lng": -65.472, "tagline": "Mangrove lagoon kayaking & birding", "desc": "A protected mangrove lagoon near Esperanza. Kayaking through the narrow mangrove channels at dawn is one of Vieques' most peaceful experiences. Herons, kingfishers, and pelicans are regulars.", "tips": ["Kayak rentals available in Esperanza", "Dawn paddling has the best birdlife", "Great complement to the bio bay at night"], "hours": "Dawn – Dusk", "duration": "2 hrs", "best": "Early morning"}, {"id": 16, "name": "Cerro Ventana", "cat": "nature", "lat": 18.135, "lng": -65.46, "tagline": "Natural rock window with panoramic views", "desc": "A short hike through dry forest leads to a natural rock formation with a 'window' opening that frames a breathtaking view of the island's interior and both coasts.", "tips": ["A local guide helps find the trailhead", "Bring water — no shade on upper section", "Best light is mid-morning"], "hours": "Dawn – Dusk", "duration": "2–3 hrs", "best": "Morning"}, {"id": 17, "name": "Taíno Cultural Site", "cat": "history", "lat": 18.12, "lng": -65.49, "tagline": "Evidence of the island's first inhabitants", "desc": "Vieques was inhabited by the Taíno for centuries before European contact. The museum at El Fortín houses recovered artifacts and explains the Taíno heritage still echoed in local place names.", "tips": ["The fort museum covers this in detail", "Some petroglyphs accessible with a local guide", "'Vieques' likely derives from a Taíno word"], "hours": "Via museum Tue–Sun", "duration": "45 min", "best": "Anytime"}, {"id": 18, "name": "Playa La Plata", "cat": "beach", "lat": 18.108, "lng": -65.46, "tagline": "The island's best-kept secret beach", "desc": "La Plata is a small crescent of powder-white sand with calm, clear water, accessible only via a rough track and short walk. No facilities, no crowds — just waves.", "tips": ["Ask a trusted local for the exact location", "4WD is essential", "Pack in everything and pack out all trash"], "hours": "Dawn – Dusk", "duration": "2–3 hrs", "best": "Morning"}, {"id": 19, "name": "Home Base", "cat": "home", "lat": 18.157917, "lng": -65.435639, "tagline": "Home base — June 1 to 6, 2026", "desc": "Your home for the week! Check-in June 1, check-out June 6, 2026. A perfect base for exploring the island — close to Isabel Segunda and within easy reach of the beaches, bio bay, and Wildlife Refuge.", "tips": ["Check-in: June 1, 2026", "Check-out: June 6, 2026", "Isabel Segunda is just a short drive away", "Stock up on groceries in town on arrival", "Bio bay tour operators in Esperanza are about 20 minutes away"], "hours": "Jun 1 – Jun 6, 2026", "duration": "5 nights", "best": "Home base!"}];
-const HOME = STOPS.find(s=>s.cat==='home');
-const CAT_LABEL = { beach:'Beach', nature:'Nature', bio:'Bio Bay', history:'History', home:'Home' };
-const CAT_EMOJI = { beach:'🏖️', nature:'🌿', bio:'✨', history:'🏰', home:'🏠' };
+const STOPS = [
+ {id:1,name:"Sun Bay",cat:"beach",lat:18.1057,lng:-65.4380,tag:"Main public beach"},
+ {id:2,name:"Media Luna",cat:"beach",lat:18.1048,lng:-65.4313,tag:"Quiet crescent beach"},
+ {id:3,name:"Navio Beach",cat:"beach",lat:18.1038,lng:-65.4246,tag:"Wild & remote"},
+ {id:4,name:"Mosquito Pier",cat:"nature",lat:18.14,lng:-65.47,tag:"Snorkeling pier"},
+ {id:5,name:"Bio Bay",cat:"bio",lat:18.1258,lng:-65.4648,tag:"Brightest bio bay"},
+ {id:6,name:"Fortín Mirasol",cat:"history",lat:18.1516,lng:-65.4434,tag:"Spanish fort"},
+ {id:7,name:"Esperanza",cat:"history",lat:18.0946,lng:-65.4714,tag:"Waterfront village"},
+ {id:8,name:"Isabel Segunda",cat:"history",lat:18.1527,lng:-65.4440,tag:"Main town"},
+ {id:9,name:"Home Base",cat:"home",lat:18.1579,lng:-65.4356,tag:"Your stay"}
+];
 
-let activeFilter='all';
-let selectedId=null;
-let map=null;
+const map = L.map("map",{center:[18.12,-65.45],zoom:12});
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
+
 const markers=new Map();
+let selectedId=null;
 
-if(typeof L === 'undefined'){
-  document.getElementById('map-fallback').style.display='flex';
-}
-
-function driveFromHome(lat,lng){
-  const R=3958.8;
-  const dLat=(lat-HOME.lat)*Math.PI/180;
-  const dLng=(lng-HOME.lng)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2 + Math.cos(HOME.lat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLng/2)**2;
-  const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-  const miles=R*c;
-  const mins=Math.max(1, Math.round((miles/30)*60));
-  return { miles:miles.toFixed(1), mins };
-}
-
-function mkIcon(stop, opts={}){
-  const cls = ['mk', stop.cat];
-  if(opts.sel) cls.push('sel');
-  if(opts.bounce) cls.push('bounce');
+function icon(stop,sel=false,b=false){
   return L.divIcon({
-    className:'',
-    html:`<div class="${cls.join(' ')}">${stop.id}</div>`,
-    iconSize:[36,36],
-    iconAnchor:[18,18]
+    className:"",
+    html:`<div class="mk ${stop.cat}${sel?' sel':''}${b?' bounce':''}">${stop.cat==='home'?'🏠':stop.id}</div>`,
+    iconSize:[36,36],iconAnchor:[18,18]
   });
 }
 
-function initMap(){
-  if(typeof L === 'undefined') return;
-  map = L.map('map', {center:[HOME.lat, HOME.lng], zoom:12, zoomControl:false});
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap contributors'}).addTo(map);
-  L.control.zoom({position:'bottomright'}).addTo(map);
-
-  STOPS.forEach(s=>{
-    const isHome = s.cat==='home';
-    const icon = isHome
-      ? L.divIcon({className:'', html:`<div class="mk home">🏠</div>`, iconSize:[36,36], iconAnchor:[18,18]})
-      : mkIcon(s);
-
-    const m = L.marker([s.lat,s.lng], {icon}).addTo(map);
-    markers.set(s.id, m);
-    m.bindPopup(`<b>${CAT_EMOJI[s.cat]} ${s.name}</b><br/>${s.tagline}`);
-    m.on('click', ()=>{
-      if(s.cat==='home'){ m.openPopup(); return; }
-      openDetail(s);
-    });
-  });
-
-  const bounds = L.latLngBounds(STOPS.map(s=>[s.lat,s.lng]));
-  map.fitBounds(bounds.pad(0.12));
-}
-
-function setSelected(id){
-  selectedId=id;
-  if(map && typeof L !== 'undefined'){
-    STOPS.forEach(s=>{
-      if(s.cat==='home') return;
-      const m = markers.get(s.id);
-      if(!m) return;
-      if(s.id===id){
-        m.setIcon(mkIcon(s,{sel:true,bounce:true}));
-        setTimeout(()=>m.setIcon(mkIcon(s,{sel:true})), 650);
-      } else {
-        m.setIcon(mkIcon(s));
-      }
-    });
-  }
-  renderList();
-}
-
-function applyFilter(){
-  if(map && typeof L !== 'undefined'){
-    STOPS.forEach(s=>{
-      if(s.cat==='home') return;
-      const m = markers.get(s.id);
-      if(!m) return;
-      const show = (activeFilter==='all') || (s.cat===activeFilter);
-      if(show){ if(!map.hasLayer(m)) m.addTo(map); }
-      else { if(map.hasLayer(m)) map.removeLayer(m); }
-    });
-  }
-  renderList();
-}
-
-function renderFilters(){
-  const host=document.getElementById('filters');
-  const defs=[
-    {key:'all',label:'All'},
-    {key:'beach',label:'🏖 Beach'},
-    {key:'nature',label:'🌿 Nature'},
-    {key:'bio',label:'✨ Bio'},
-    {key:'history',label:'🏰 History'}
-  ];
-  host.innerHTML='';
-  defs.forEach(d=>{
-    const b=document.createElement('button');
-    b.className='filter-btn'+(activeFilter===d.key?' on':'');
-    b.textContent=d.label;
-    b.onclick=()=>{
-      activeFilter=d.key;
-      host.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('on'));
-      b.classList.add('on');
-      applyFilter();
-    };
-    host.appendChild(b);
-  });
-}
+STOPS.forEach(s=>{
+  const m=L.marker([s.lat,s.lng],{icon:icon(s)}).addTo(map);
+  m.on("click",()=>openDetail(s));
+  markers.set(s.id,m);
+});
 
 function renderList(){
-  const listEl=document.getElementById('list');
-  listEl.innerHTML='';
-  const filtered = STOPS.filter(s=> s.cat==='home' || activeFilter==='all' || s.cat===activeFilter);
-  filtered.forEach(s=>{
-    const row=document.createElement('div');
-    row.className='item'+(s.id===selectedId?' selected':'');
-    row.innerHTML = `
-      <div class="num ${s.cat}">${s.id}</div>
-      <div style="flex:1">
-        <div class="name">${CAT_EMOJI[s.cat]} ${s.name}</div>
-        <div class="tag">${s.tagline}</div>
-        <span class="pill p-${s.cat}">${CAT_LABEL[s.cat]}</span>
-      </div>
-    `;
-    row.onclick=()=>{
-      if(map) map.flyTo([s.lat,s.lng], s.cat==='home'?15:13, {animate:true,duration:0.8});
-      if(s.cat==='home'){ if(markers.get(s.id)) markers.get(s.id).openPopup(); }
-      else openDetail(s);
-    };
-    listEl.appendChild(row);
+  const el=document.getElementById("list");
+  el.innerHTML="";
+  STOPS.forEach(s=>{
+    const d=document.createElement("div");
+    d.className="item"+(s.id===selectedId?" selected":"");
+    d.innerHTML=`
+      <div class="num ${s.cat}">${s.cat==='home'?'🏠':s.id}</div>
+      <div>
+        <div class="name">${s.name}</div>
+        <div class="tag">${s.tag}</div>
+      </div>`;
+    d.onclick=()=>openDetail(s);
+    el.appendChild(d);
   });
 }
 
-function renderDetail(stop){
-  const d=driveFromHome(stop.lat, stop.lng);
-  const tips = (stop.tips||[]).map(t=>`<li>${t}</li>`).join('');
-  document.getElementById('detail-content').innerHTML = `
-    <div class="hero accent-${stop.cat}">
+function openDetail(s){
+  selectedId=s.id;
+  markers.forEach((m,id)=>{
+    const st=STOPS.find(x=>x.id===id);
+    m.setIcon(icon(st,id===s.id,true));
+  });
+  setTimeout(()=>markers.get(s.id)?.setIcon(icon(s,true,false)),650);
+
+  map.flyTo([s.lat,s.lng],13,{animate:true});
+  document.getElementById("detail").classList.add("open");
+  document.getElementById("detail-content").innerHTML=`
+    <div class="hero">
       <div class="hero-top">
-        <div class="hero-num ${stop.cat}">${stop.id}</div>
+        <div class="hero-num ${s.cat}">${s.cat==='home'?'🏠':s.id}</div>
         <div>
-          <div class="hero-cat">${CAT_EMOJI[stop.cat]} ${CAT_LABEL[stop.cat].toUpperCase()}</div>
-          <div class="hero-name">${stop.name}</div>
-          <div class="hero-tag">${stop.tagline}</div>
-          <div class="drive">🚗 ${d.mins} min · ${d.miles} mi from Home Base</div>
+          <div class="hero-name">${s.name}</div>
+          <div class="hero-tag">${s.tag}</div>
         </div>
       </div>
     </div>
-    <div class="meta">
-      <div class="cell"><div class="lbl">Duration</div><div class="val">${stop.duration||''}</div></div>
-      <div class="cell"><div class="lbl">Best</div><div class="val">${stop.best||''}</div></div>
-      <div class="cell"><div class="lbl">Hours</div><div class="val">${stop.hours||''}</div></div>
-    </div>
-    <div class="section"><h3>About</h3><p>${stop.desc||''}</p></div>
-    <div class="section"><h3>Local Tips</h3><ul>${tips}</ul></div>
-    <div class="section"><h3>Location</h3><p style="font-family:monospace;color:#666;">${stop.lat.toFixed(6)}, ${stop.lng.toFixed(6)}</p></div>
-  `;
+    <div class="section"><h3>Location</h3><p>${s.lat}, ${s.lng}</p></div>`;
+  renderList();
 }
 
-function openDetail(stop){
-  setSelected(stop.id);
-  if(map) map.panTo([stop.lat, stop.lng], {animate:true, duration:0.6});
-  renderDetail(stop);
-  document.getElementById('detail').classList.add('open');
-}
+document.getElementById("close-detail").onclick=()=>document.getElementById("detail").classList.remove("open");
+document.addEventListener("click",e=>{
+  const d=document.getElementById("detail");
+  if(!d.classList.contains("open"))return;
+  if(d.contains(e.target))return;
+  d.classList.remove("open");
+});
 
-function closeDetail(){ document.getElementById('detail').classList.remove('open'); }
-
-(function(){
-  const detail=document.getElementById('detail');
-  document.getElementById('close-detail').onclick=closeDetail;
-  let justOpened=false;
-  const origOpen=openDetail;
-  openDetail=function(stop){ justOpened=true; setTimeout(()=>justOpened=false,0); return origOpen(stop); }
-  document.addEventListener('click',(e)=>{
-    if(!detail.classList.contains('open')) return;
-    if(justOpened) return;
-    if(detail.contains(e.target)) return;
-    closeDetail();
-  });
-})();
-
-renderFilters();
 renderList();
-setTimeout(initMap, 50);
 </script>
 </body>
 </html>
